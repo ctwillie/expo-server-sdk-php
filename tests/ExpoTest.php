@@ -29,4 +29,26 @@ class ExpoTest extends TestCase
 
         Expo::driver('foo');
     }
+
+    /**
+     * @test
+     * @depends expo_instantiates
+     */
+    public function can_identify_valid_expo_tokens(Expo $expo)
+    {
+        $result = $expo->isExpoPushToken('foo');
+        $this->assertFalse($result);
+
+        $result = $expo->isExpoPushToken('ExpoPushToken[');
+        $this->assertFalse($result);
+
+        $result = $expo->isExpoPushToken('ExponentPushToken[');
+        $this->assertFalse($result);
+
+        $result = $expo->isExpoPushToken('ExpoPushToken[aaaabbbbccccdddd]');
+        $this->assertTrue($result);
+
+        $result = $expo->isExpoPushToken('ExponentPushToken[aaaabbbbccccdddd]');
+        $this->assertTrue($result);
+    }
 }

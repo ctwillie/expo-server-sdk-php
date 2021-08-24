@@ -31,21 +31,33 @@ class File
         $this->validateContents();
     }
 
-    private function isValidPath($path)
+    /**
+     * Check if the file path is valid and exists
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function isValidPath(string $path)
     {
-        return is_string($path) && strlen($path) !== 0 && file_exists($path);
+        return strlen($path) > 0 && file_exists($path);
     }
 
+    /**
+     * Check if the file has a json extension
+     *
+     * @param string $path
+     * @return bool
+     */
     private function isJson(string $path)
     {
-        $ext = '.json';
-        $length = strlen($ext);
-
-        return $length > 0
-            ? substr($path, -$length) === $ext
-            : true;
+        return Helper::strEndsWith($path, '.json');
     }
 
+    /**
+     * Ensures the file contains an object
+     *
+     * @return void
+     */
     private function validateContents()
     {
         $contents = $this->read();
@@ -56,7 +68,7 @@ class File
     }
 
     /**
-     * Reads a files contents
+     * Reads the files contents
      *
      * @return object
      * @throws UnableToReadFileException
@@ -76,7 +88,7 @@ class File
     }
 
     /**
-     * Writes to a file
+     * Writes content to the file
      *
      * @param object $contents
      * @return bool
@@ -84,7 +96,10 @@ class File
      */
     public function write(object $contents)
     {
-        $result = @file_put_contents($this->path, json_encode($contents));
+        $result = @file_put_contents(
+            $this->path,
+            json_encode($contents)
+        );
 
         if ($result === false) {
             throw new UnableToWriteFileException(sprintf(
@@ -97,7 +112,7 @@ class File
     }
 
     /**
-     * Empties a files contents
+     * Empties the files contents
      *
      * @return void
      */

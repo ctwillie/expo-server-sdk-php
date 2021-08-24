@@ -14,7 +14,8 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 
 ## Todo
 
--   Check tokens are actually ExpoPushTokens
+-   [ ] Add ability to send push notification messages
+-   [ ] Add a database driver
 
 ## Support us
 
