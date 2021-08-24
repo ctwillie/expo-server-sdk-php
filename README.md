@@ -12,6 +12,10 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 -   File - https://github.com/thephpleague/flysystem
 -   Database - https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction
 
+## Todo
+
+-   Check tokens are actually ExpoPushTokens
+
 ## Support us
 
 Buy me a coffee.

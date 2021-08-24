@@ -9,6 +9,8 @@ use Twillie\Expo\Exceptions\UnableToWriteFileException;
 
 class File
 {
+    private $path;
+
     public function __construct(string $path)
     {
         $this->path = $path;
@@ -48,7 +50,7 @@ class File
         $contents = $this->read();
 
         if (gettype($contents) !== "object") {
-            $this->write(new stdClass);
+            $this->write(new \stdClass);
         }
     }
 
@@ -71,6 +73,13 @@ class File
         return json_decode($contents);
     }
 
+    /**
+     * Writes to a file
+     *
+     * @param object $contents
+     * @return bool
+     * @throws UnableToWriteFileException
+     */
     public function write(object $contents)
     {
         $result = @file_put_contents($this->path, json_encode($contents));
@@ -80,5 +89,17 @@ class File
                 'Unable to write file at %s.', $this->path
             ));
         }
+
+        return true;
+    }
+
+    /**
+     * Empties a files contents
+     *
+     * @return void
+     */
+    public function empty()
+    {
+        $this->write(new \stdClass());
     }
 }
