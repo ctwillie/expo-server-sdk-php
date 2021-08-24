@@ -15,9 +15,10 @@ class File
     {
         $this->path = $path;
 
-         if (! $this->isValidPath($path)) {
+        if (! $this->isValidPath($path)) {
             throw new FileDoesntExistException(sprintf(
-                'The file %s does not exist.', $path
+                'The file %s does not exist.',
+                $path
             ));
         }
 
@@ -50,7 +51,7 @@ class File
         $contents = $this->read();
 
         if (gettype($contents) !== "object") {
-            $this->write(new \stdClass);
+            $this->write(new \stdClass());
         }
     }
 
@@ -66,7 +67,8 @@ class File
 
         if ($contents === false) {
             throw new UnableToReadFileException(sprintf(
-                'Unable to read file at %s.', $this->path
+                'Unable to read file at %s.',
+                $this->path
             ));
         }
 
@@ -86,7 +88,8 @@ class File
 
         if ($result === false) {
             throw new UnableToWriteFileException(sprintf(
-                'Unable to write file at %s.', $this->path
+                'Unable to write file at %s.',
+                $this->path
             ));
         }
 

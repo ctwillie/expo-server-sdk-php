@@ -20,7 +20,8 @@ class FileDriverTest extends TestCase
         $this->file = new File($this->path);
         $this->file->empty();
         $this->expo = Expo::driver(
-            'file', ['path' => $this->path]
+            'file',
+            ['path' => $this->path]
         );
     }
 
@@ -33,7 +34,8 @@ class FileDriverTest extends TestCase
     public function file_driver_instantiates()
     {
         $expo = Expo::driver(
-            'file', ['path' => $this->path]
+            'file',
+            ['path' => $this->path]
         );
 
         $this->assertInstanceOf(Expo::class, $expo);

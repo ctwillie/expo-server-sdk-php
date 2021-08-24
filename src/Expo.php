@@ -2,8 +2,6 @@
 
 namespace Twillie\Expo;
 
-use Twillie\Expo\Exceptions\BadMethodCallException;
-
 class Expo
 {
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace Twillie\Expo;
 
 use Twillie\Expo\Drivers\FileDriver;
@@ -8,19 +9,19 @@ use Twillie\Expo\Exceptions\UnsupportedDriverException;
 class DriverManager
 {
     /**
-     * @var array $supportedDrivers
+     * @var array
      */
     private $supportedDrivers = [
         'file',
     ];
 
     /**
-     * @var string $driverKey
+     * @var string
      */
-     private $driverKey;
+    private $driverKey;
 
     /**
-     * @var Driver $driver
+     * @var Driver
      */
     private $driver;
 
@@ -36,7 +37,8 @@ class DriverManager
 
         if (! in_array($this->driverKey, $this->supportedDrivers)) {
             throw new UnsupportedDriverException(sprintf(
-                'Driver %s is not supported', $driver
+                'Driver %s is not supported',
+                $driver
             ));
         }
 
@@ -120,7 +122,8 @@ class DriverManager
         }
 
         throw new InvalidTokensException(sprintf(
-            'Tokens must be a string or non empty array, %s given.', gettype($tokens)
+            'Tokens must be a string or non empty array, %s given.',
+            gettype($tokens)
         ));
     }
 }

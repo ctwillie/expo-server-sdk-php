@@ -2,23 +2,21 @@
 
 namespace Twillie\Expo\Drivers;
 
-use Twillie\Expo\Drivers\Driver;
 use Twillie\Expo\File;
-
 
 class FileDriver extends Driver
 {
     /**
      * The path to the file
      *
-     * @var string $path
+     * @var string
      */
     private $path = __DIR__ . '/../storage/expo.json';
 
     /**
      * The storage file object
      *
-     * @var File $file
+     * @var File
      */
     private $file;
 
