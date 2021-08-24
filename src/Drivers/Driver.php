@@ -1,6 +1,6 @@
 <?php
 
-namespace Twillie\Expo\Drivers;
+namespace ExpoSDK\Expo\Drivers;
 
 abstract class Driver
 {

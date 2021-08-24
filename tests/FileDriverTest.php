@@ -1,13 +1,13 @@
 <?php
 
-namespace Twillie\Expo\Tests;
+namespace ExpoSDK\Expo\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Twillie\Expo\Exceptions\FileDoesntExistException;
-use Twillie\Expo\Exceptions\InvalidFileException;
-use Twillie\Expo\Exceptions\InvalidTokensException;
-use Twillie\Expo\Expo;
-use Twillie\Expo\File;
+use ExpoSDK\Expo\Exceptions\FileDoesntExistException;
+use ExpoSDK\Expo\Exceptions\InvalidFileException;
+use ExpoSDK\Expo\Exceptions\InvalidTokensException;
+use ExpoSDK\Expo\Expo;
+use ExpoSDK\Expo\File;
 
 class FileDriverTest extends TestCase
 {

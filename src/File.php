@@ -1,11 +1,11 @@
 <?php
 
-namespace Twillie\Expo;
+namespace ExpoSDK\Expo;
 
-use Twillie\Expo\Exceptions\FileDoesntExistException;
-use Twillie\Expo\Exceptions\InvalidFileException;
-use Twillie\Expo\Exceptions\UnableToReadFileException;
-use Twillie\Expo\Exceptions\UnableToWriteFileException;
+use ExpoSDK\Expo\Exceptions\FileDoesntExistException;
+use ExpoSDK\Expo\Exceptions\InvalidFileException;
+use ExpoSDK\Expo\Exceptions\UnableToReadFileException;
+use ExpoSDK\Expo\Exceptions\UnableToWriteFileException;
 
 class File
 {

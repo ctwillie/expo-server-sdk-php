@@ -1,10 +1,10 @@
 <?php
 
-namespace Twillie\Expo\Tests;
+namespace ExpoSDK\Expo\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Twillie\Expo\Exceptions\UnsupportedDriverException;
-use Twillie\Expo\Expo;
+use ExpoSDK\Expo\Exceptions\UnsupportedDriverException;
+use ExpoSDK\Expo\Expo;
 
 class ExpoTest extends TestCase
 {

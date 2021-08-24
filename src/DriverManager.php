@@ -1,10 +1,10 @@
 <?php
 
-namespace Twillie\Expo;
+namespace ExpoSDK\Expo;
 
-use Twillie\Expo\Drivers\FileDriver;
-use Twillie\Expo\Exceptions\InvalidTokensException;
-use Twillie\Expo\Exceptions\UnsupportedDriverException;
+use ExpoSDK\Expo\Drivers\FileDriver;
+use ExpoSDK\Expo\Exceptions\InvalidTokensException;
+use ExpoSDK\Expo\Exceptions\UnsupportedDriverException;
 
 class DriverManager
 {

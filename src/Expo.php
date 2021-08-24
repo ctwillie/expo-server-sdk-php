@@ -1,6 +1,6 @@
 <?php
 
-namespace Twillie\Expo;
+namespace ExpoSDK\Expo;
 
 class Expo
 {

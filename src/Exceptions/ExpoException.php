@@ -1,6 +1,6 @@
 <?php
 
-namespace Twillie\Expo\Exceptions;
+namespace ExpoSDK\Expo\Exceptions;
 
 class ExpoException extends \Exception
 {

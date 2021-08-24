@@ -1,8 +1,8 @@
 <?php
 
-namespace Twillie\Expo\Drivers;
+namespace ExpoSDK\Expo\Drivers;
 
-use Twillie\Expo\File;
+use ExpoSDK\Expo\File;
 
 class FileDriver extends Driver
 {

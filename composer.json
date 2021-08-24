@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Twillie\\Expo\\": "src"
+            "ExpoSDK\\Expo\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Twillie\\Expo\\Tests\\": "tests"
+            "ExpoSDK\\Expo\\Tests\\": "tests"
         }
     },
     "scripts": {
