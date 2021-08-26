@@ -14,8 +14,14 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 
 ## Todo
 
--   [ ] Add ability to send push notification messages
+-   [ ] Add ability to set access token
+-   [ ] Only send 100 messages at a time
+-   [ ] gzip-compress request bodies over 1 KiB
+-   [ ] automatically throttle requests
+-   [ ] Verify message delivery
 -   [ ] Add a database driver
+
+## Ideas
 
 ## Support us
 

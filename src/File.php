@@ -50,7 +50,7 @@ class File
      */
     private function isJson(string $path)
     {
-        return Helper::strEndsWith($path, '.json');
+        return Utils::strEndsWith($path, '.json');
     }
 
     /**

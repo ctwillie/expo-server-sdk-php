@@ -2,7 +2,7 @@
 
 namespace ExpoSDK\Expo;
 
-class Helper
+class Utils
 {
     /**
      * Check if a string is a valid Expo push token
