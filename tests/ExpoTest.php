@@ -131,7 +131,6 @@ class ExpoTest extends TestCase
     {
         $message = (new ExpoMessage())
             ->setTitle('Test Title')
-            ->setTitle('Test title')
             ->setBody('Test message body')
             ->setPriority('default')
             ->playSound();

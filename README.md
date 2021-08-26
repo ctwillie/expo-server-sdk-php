@@ -1,33 +1,16 @@
-# Server-side library for working with Expo using PHP
+# expo-server-sdk-php
+
+Server-side library for working with Expo using PHP.
+
+If you have any problems with the code in this repository, feel free to [open an issue](https://github.com/ctwillie/expo-server-sdk-php/issues) or make a PR!
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/run-tests?label=tests)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/Check%20&%20fix%20styling?label=code%20style)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+<!-- [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/run-tests?label=tests)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3Arun-tests+branch%3Amain) -->
 
-## Notes
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/Check%20&%20fix%20styling?label=code%20style)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3A"Check+%26+fix+styling")
 
--   File - https://github.com/thephpleague/flysystem
--   Database - https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction
-
-## Todo
-
--   [ ] Add ability to set access token
--   [ ] Only send 100 messages at a time
--   [ ] gzip-compress request bodies over 1 KiB
--   [ ] automatically throttle requests
--   [ ] Verify message delivery
--   [ ] Add a database driver
-
-## Ideas
-
-## Support us
-
-Buy me a coffee.
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/expo-server-sdk-php.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/expo-server-sdk-php)
+Server-side library for working with Expo using PHP.
 
 ## Installation
 
@@ -40,8 +23,41 @@ composer require ctwillie/expo-server-sdk-php
 ## Usage
 
 ```php
-$expo-server-sdk-php = new Twillie\Expo();
-echo $expo-server-sdk-php->echoPhrase('Hello, Spatie!');
+/**
+ * Send a one time push notification message to
+ * one or more recipients.
+ */
+$expo = new Expo();
+$recipients = ['ExponentPushToken[xxxx-xxxx-xxxx]', 'ExponentPushToken[yyyy-yyyy-yyyy]'];
+$message = (new ExpoMessage())
+    ->setTitle('Message Title')
+    ->setBody('The notification message body')
+    ->setChannelId('default')
+    ->playSound();
+
+$expo->send($message)->to($recipients)->push();
+
+
+/**
+ * Or, subscribe recipients to a channel, then push
+ * notification messages to that channel.
+ */
+$expo = new Expo();
+$recipients = ['ExponentPushToken[xxxx-xxxx-xxxx]', 'ExponentPushToken[yyyy-yyyy-yyyy]'];
+$message = (new ExpoMessage())
+    ->setTitle('Message Title')
+    ->setBody('The notification message body')
+    ->setChannelId('default')
+    ->playSound();
+
+$channel = 'default';
+$expo->subscribe($channel, $recipients);
+
+$expo->send($message)->toChannel($channel)->push();
+
+// You can unsubscribe one or more recipients
+// from a channel at any time.
+$expo->unsubscribe($channel, $recipients);
 ```
 
 ## Testing
