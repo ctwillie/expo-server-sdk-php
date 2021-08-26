@@ -1,12 +1,8 @@
-# expo-server-sdk-php
+# expo-server-sdk-php [![Latest Version on Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
 
 Server-side library for working with Expo using PHP.
 
 If you have any problems with the code in this repository, feel free to [open an issue](https://github.com/ctwillie/expo-server-sdk-php/issues) or make a PR!
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
-
-Server-side library for working with Expo using PHP.
 
 ## Installation
 
