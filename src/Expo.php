@@ -233,6 +233,19 @@ class Expo
     }
 
     /**
+     * Set the Expo access token
+     *
+     * @param string
+     * @return $this
+     */
+    public function setAccessToken(string $accessToken)
+    {
+        $this->client->setAccessToken($accessToken);
+
+        return $this;
+    }
+
+    /**
      * Resets the instance data
      *
      * @return void

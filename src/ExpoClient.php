@@ -10,13 +10,20 @@ class ExpoClient
     public const EXPO_URL = 'https://exp.host/--/api/v2/push/send';
 
     /**
+     * The Expo access token
+     *
+     * @var string
+     */
+    private $accessToken = null;
+
+    /**
      * @var GuzzleHttpClient
      */
-    private $guzzle;
+    private $client;
 
     public function __construct()
     {
-        $this->guzzle = new Client();
+        $this->client = new Client();
     }
 
     /**
@@ -27,7 +34,7 @@ class ExpoClient
      */
     public function post(array $messages)
     {
-        return $this->guzzle->post(self::EXPO_URL, [
+        return $this->client->post(self::EXPO_URL, [
             'verify' => false,
             'headers' => $this->getHeaders(),
             'json' => $messages,
@@ -35,17 +42,34 @@ class ExpoClient
     }
 
     /**
-     * Get the clients default headers
+     * Set the Expo access token
+     *
+     * @param string $accessToken
+     * @return void
+     */
+    public function setAccessToken(string $accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * Get the clients request headers
      *
      * @return array
      */
     private function getHeaders()
     {
-        return [
+        $headers = [
             'Host' => 'exp.host',
             'Accept' => 'application/json',
             'Accept-Encoding' => 'gzip, deflate',
             'Content-Type' => 'application/json',
         ];
+
+        if ($this->accessToken) {
+            $headers['Authorization'] = "Bearer {$this->accessToken}";
+        }
+
+        return $headers;
     }
 }
