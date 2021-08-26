@@ -20,6 +20,7 @@ composer require ctwillie/expo-server-sdk-php
  * one or more recipients.
  */
 $expo = new Expo();
+
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
     ->setBody('The notification message body')
@@ -42,6 +43,7 @@ $expo->send($message)->to($recipients)->push();
 // Use the "file" driver to interact with and persist your subscriptions.
 // The storage is handled internally using a local file.
 $expo = Expo::driver('file');
+
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
     ->setBody('The notification message body')
@@ -54,7 +56,7 @@ $recipients = [
 ];
 
 $channel = 'news-letter';
-// Thechannel will be created if it doesn't already exist
+// The channel will be created automatically if it doesn't exist
 $expo->subscribe($channel, $recipients);
 
 $expo->send($message)->toChannel($channel)->push();
