@@ -1,4 +1,4 @@
-# expo-server-sdk-php [![Latest Version on Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
+# expo-server-sdk-php [![Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
 
 Server-side library for working with Expo using PHP.
 
