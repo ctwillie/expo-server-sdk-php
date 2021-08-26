@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class ExpoClient
 {
-    const EXPO_URL = 'https://exp.host/--/api/v2/push/send';
+    public const EXPO_URL = 'https://exp.host/--/api/v2/push/send';
 
     /**
      * @var GuzzleHttpClient

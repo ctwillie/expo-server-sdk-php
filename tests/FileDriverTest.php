@@ -2,12 +2,12 @@
 
 namespace ExpoSDK\Expo\Tests;
 
-use PHPUnit\Framework\TestCase;
 use ExpoSDK\Expo\Exceptions\FileDoesntExistException;
 use ExpoSDK\Expo\Exceptions\InvalidFileException;
 use ExpoSDK\Expo\Exceptions\InvalidTokensException;
 use ExpoSDK\Expo\Expo;
 use ExpoSDK\Expo\File;
+use PHPUnit\Framework\TestCase;
 
 class FileDriverTest extends TestCase
 {

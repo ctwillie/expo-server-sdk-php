@@ -15,7 +15,7 @@ class ExpoMessage
     private $ttl = null;
     private $priority = 'default';
     private $subtitle = null;
-    private $sound =  null;
+    private $sound = null;
     private $badge = null;
     private $channelId = null;
     private $categoryId = null;
@@ -34,7 +34,8 @@ class ExpoMessage
             $data = json_encode($data);
         } catch (Exception $e) {
             throw new Exception(sprintf(
-                'Data could not be json encoded. %s', $e->getMessage()
+                'Data could not be json encoded. %s',
+                $e->getMessage()
             ));
         }
 
@@ -191,8 +192,8 @@ class ExpoMessage
             if (! is_null($value)) {
                 $attributes[$key] = $value;
             }
-       }
+        }
 
-       return $attributes;
+        return $attributes;
     }
 }

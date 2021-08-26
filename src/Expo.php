@@ -4,8 +4,6 @@ namespace ExpoSDK\Expo;
 
 use Exception;
 use ExpoSDK\Expo\Exceptions\InvalidTokensException;
-use ExpoSDK\Expo\ExpoClient;
-use Psr\Http\Message\ResponseInterface;
 
 class Expo
 {
@@ -157,7 +155,7 @@ class Expo
             return Utils::isExpoPushToken($token);
         });
 
-        if (count($tokens) === 0 ) {
+        if (count($tokens) === 0) {
             throw new \Exception('No valid expo tokens supplied.');
         }
 
