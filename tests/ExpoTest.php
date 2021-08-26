@@ -130,7 +130,7 @@ class ExpoTest extends TestCase
     public function an_expo_message_can_be_built()
     {
         $message = (new ExpoMessage())
-            ->setTitle('Test Title')
+            ->setTitle('Test title')
             ->setBody('Test message body')
             ->setPriority('default')
             ->playSound();

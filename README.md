@@ -6,10 +6,6 @@ If you have any problems with the code in this repository, feel free to [open an
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ctwillie/expo-server-sdk-php.svg?style=flat-square)](https://packagist.org/packages/ctwillie/expo-server-sdk-php)
 
-<!-- [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/run-tests?label=tests)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3Arun-tests+branch%3Amain) -->
-
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ctwillie/expo-server-sdk-php/Check%20&%20fix%20styling?label=code%20style)](https://github.com/ctwillie/expo-server-sdk-php/actions?query=workflow%3A"Check+%26+fix+styling")
-
 Server-side library for working with Expo using PHP.
 
 ## Installation
@@ -28,12 +24,16 @@ composer require ctwillie/expo-server-sdk-php
  * one or more recipients.
  */
 $expo = new Expo();
-$recipients = ['ExponentPushToken[xxxx-xxxx-xxxx]', 'ExponentPushToken[yyyy-yyyy-yyyy]'];
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
     ->setBody('The notification message body')
     ->setChannelId('default')
     ->playSound();
+
+$recipients = [
+    'ExponentPushToken[xxxx-xxxx-xxxx]',
+    'ExponentPushToken[yyyy-yyyy-yyyy]'
+];
 
 $expo->send($message)->to($recipients)->push();
 
@@ -42,15 +42,23 @@ $expo->send($message)->to($recipients)->push();
  * Or, subscribe recipients to a channel, then push
  * notification messages to that channel.
  */
-$expo = new Expo();
-$recipients = ['ExponentPushToken[xxxx-xxxx-xxxx]', 'ExponentPushToken[yyyy-yyyy-yyyy]'];
+
+// Use the "file" driver to interact with and persist your subscriptions.
+// The storage is handled internally using a local file.
+$expo = Expo::driver('file');
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
     ->setBody('The notification message body')
     ->setChannelId('default')
     ->playSound();
 
-$channel = 'default';
+$recipients = [
+    'ExponentPushToken[xxxx-xxxx-xxxx]',
+    'ExponentPushToken[yyyy-yyyy-yyyy]'
+];
+
+$channel = 'news-letter';
+// Thechannel will be created if it doesn't already exist
 $expo->subscribe($channel, $recipients);
 
 $expo->send($message)->toChannel($channel)->push();
