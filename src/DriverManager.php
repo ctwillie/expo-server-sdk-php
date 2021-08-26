@@ -121,9 +121,8 @@ class DriverManager
             return [$tokens];
         }
 
-        throw new InvalidTokensException(sprintf(
-            'Tokens must be a string or non empty array, %s given.',
-            gettype($tokens)
-        ));
+        throw new InvalidTokensException(
+            'Tokens must be a string or non empty array'
+        );
     }
 }

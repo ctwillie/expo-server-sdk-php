@@ -62,6 +62,7 @@ class Expo
      *
      * @param string $channel
      * @param string|array $tokens
+     * @throws Exception
      */
     public function subscribe(string $channel, $tokens = null)
     {
@@ -73,10 +74,40 @@ class Expo
     }
 
     /**
+     * Unsubscribes tokens from a channel
+     *
+     * @param string $channel
+     * @param string|array $tokens
+     * @throws Exception
+    */
+    public function unsubscribe(string $channel, $tokens = null)
+    {
+        if ($this->manager) {
+            return $this->manager->unsubscribe($channel, $tokens);
+        }
+
+        throw new Exception('You must provide a driver to interact with subscriptions.');
+    }
+
+    /**
+     * Set the recipients from channel subscriptions to send the message to
+     *
+     * @param string $channel
+     * @return self
+     */
+    public function toChannel(string $channel)
+    {
+        $this->recipients = $this->getSubscriptions($channel);
+
+        return $this;
+    }
+
+    /**
      * Retrieves a channels subscriptions
      *
      * @param string $channel
      * @return array|null
+     * @throws Exception
      */
     public function getSubscriptions(string $channel)
     {
@@ -88,15 +119,16 @@ class Expo
     }
 
     /**
-     * Unsubscribes tokens from a channel
+     * Checks if a channel has subscriptions
      *
      * @param string $channel
-     * @param string|array $tokens
-    */
-    public function unsubscribe(string $channel, $tokens = null)
+     * @return bool
+     * @throws Exception
+     */
+    public function hasSubscriptions(string $channel)
     {
         if ($this->manager) {
-            return $this->manager->unsubscribe($channel, $tokens);
+            return (bool) $this->manager->getSubscriptions($channel);
         }
 
         throw new Exception('You must provide a driver to interact with subscriptions.');
@@ -110,15 +142,21 @@ class Expo
      */
     public function isExpoPushToken($value)
     {
-        if (! is_string($value) || strlen($value) < 15) {
-            return false;
-        }
-
         return Utils::isExpoPushToken($value);
     }
 
     /**
-     * Sets the ExpoMessage to send
+     * Get the message recipients
+     *
+     * @return array|null
+     */
+    public function getRecipients()
+    {
+        return $this->recipients;
+    }
+
+    /**
+     * Sets the message to send
      *
      * @param ExpoMessage $message
      * @return self
@@ -165,22 +203,14 @@ class Expo
     }
 
     /**
-     * Get the message recipients
-     *
-     * @return array|null
-     */
-    public function getRecipients()
-    {
-        return $this->recipients;
-    }
-
-    /**
      * Send the message to the expo server
      *
      * @return object|false
      */
     public function push()
     {
+        $succeeded = true;
+
         if (is_null($this->message) || is_null($this->recipients)) {
             throw new Exception('You must have a message and recipients to push');
         }
@@ -192,10 +222,24 @@ class Expo
         try {
             $response = $this->client->post($messages);
         } catch (Exception $e) {
-            return false;
+            $succeeded = false;
         }
 
-        // handle in Client instead of here
-        return json_decode($response->getBody());
+        $this->reset();
+
+        return $succeeded
+            ? json_decode($response->getBody())
+            : false;
+    }
+
+    /**
+     * Resets the instance data
+     *
+     * @return void
+     */
+    private function reset()
+    {
+        $this->message = null;
+        $this->recipients = null;
     }
 }

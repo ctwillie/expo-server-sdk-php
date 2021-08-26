@@ -5,13 +5,17 @@ namespace ExpoSDK\Expo;
 class Utils
 {
     /**
-     * Check if a string is a valid Expo push token
+     * Check if a value is a valid Expo push token
      *
-     * @param string $value
+     * @param mixed $value
      * @return bool
      */
-    public static function isExpoPushToken(string $value)
+    public static function isExpoPushToken($value)
     {
+        if (! is_string($value) || strlen($value) < 15) {
+            return false;
+        }
+
         return (self::strStartsWith($value, 'ExponentPushToken[') ||
             self::strStartsWith($value, 'ExpoPushToken[')) &&
             self::strEndsWith($value, ']');

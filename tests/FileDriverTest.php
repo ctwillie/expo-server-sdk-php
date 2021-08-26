@@ -78,7 +78,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function can_subscribe_a_single_token_to_a_channel()
     {
-        $channel = 'promo';
+        $channel = 'default';
         $token = 'ExpoPushToken[random-token]';
 
         $this->expo->subscribe($channel, $token);
@@ -101,9 +101,24 @@ class FileDriverTest extends TestCase
     }
 
     /** @test */
+    public function can_retrieve_a_channels_subscriptions()
+    {
+        $channel = 'default';
+        $tokens = [
+            'ExpoPushToken[random-token-1]',
+            'ExpoPushToken[random-token-2]',
+        ];
+
+        $this->expo->subscribe($channel, $tokens);
+        $subs = $this->expo->getSubscriptions($channel);
+
+        $this->assertSame($tokens, $subs);
+    }
+
+    /** @test */
     public function can_unsubscribe_a_single_token_from_a_channel()
     {
-        $channel = 'promo';
+        $channel = 'default';
         $token1 = 'ExpoPushToken[random-token-1]';
         $token2 = 'ExpoPushToken[random-token-2]';
 
@@ -121,7 +136,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function can_unsubscribe_multiple_tokens_from_a_channel()
     {
-        $channel = 'promo';
+        $channel = 'default';
         $token1 = 'ExpoPushToken[random-token-1]';
         $token2 = 'ExpoPushToken[random-token-2]';
         $token3 = 'ExpoPushToken[random-token-3]';
@@ -140,7 +155,7 @@ class FileDriverTest extends TestCase
     /** @test */
     public function channel_is_deleted_when_all_subscriptions_are_removed()
     {
-        $channel = 'promo';
+        $channel = 'default';
         $token1 = 'ExpoPushToken[random-token-1]';
         $token2 = 'ExpoPushToken[random-token-2]';
 

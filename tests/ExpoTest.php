@@ -33,13 +33,18 @@ class ExpoTest extends TestCase
     }
 
     /** @test */
-    public function throws_exception_trying_to_subscribe_without_driver()
+    public function throws_exception_interacting_with_subscriptions_without_driver()
     {
         $expo = new Expo();
 
         $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
-
         $expo->subscribe('default', []);
+
+        $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
+        $expo->unsubscribe('default', []);
+
+        $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
+        $expo->getSubscriptions('default', []);
     }
 
     /**
@@ -150,14 +155,5 @@ class ExpoTest extends TestCase
         $this->expectExceptionMessage('You must have a message and recipients to push');
 
         $expo->push();
-    }
-
-    /**
-     * @test
-     * @depends expo_instantiates
-     */
-    public function test_true(Expo $expo)
-    {
-        $this->assertTrue(true);
     }
 }
