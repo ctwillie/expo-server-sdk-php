@@ -1,10 +1,10 @@
 <?php
 
-namespace ExpoSDK\Expo;
+namespace ExpoSDK;
 
-use ExpoSDK\Expo\Drivers\FileDriver;
-use ExpoSDK\Expo\Exceptions\InvalidTokensException;
-use ExpoSDK\Expo\Exceptions\UnsupportedDriverException;
+use ExpoSDK\Drivers\FileDriver;
+use ExpoSDK\Exceptions\InvalidTokensException;
+use ExpoSDK\Exceptions\UnsupportedDriverException;
 
 class DriverManager
 {

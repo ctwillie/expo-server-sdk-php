@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ExpoSDK\\Expo\\": "src"
+            "ExpoSDK\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ExpoSDK\\Expo\\Tests\\": "tests"
+            "ExpoSDK\\Tests\\": "tests"
         }
     },
     "scripts": {

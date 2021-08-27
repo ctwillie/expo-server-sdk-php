@@ -1,8 +1,8 @@
 <?php
 
-namespace ExpoSDK\Expo\Tests;
+namespace ExpoSDK\Tests;
 
-use ExpoSDK\Expo\Utils;
+use ExpoSDK\Utils;
 use PHPUnit\Framework\TestCase;
 
 class UtilsTest extends TestCase

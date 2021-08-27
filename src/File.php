@@ -1,11 +1,11 @@
 <?php
 
-namespace ExpoSDK\Expo;
+namespace ExpoSDK;
 
-use ExpoSDK\Expo\Exceptions\FileDoesntExistException;
-use ExpoSDK\Expo\Exceptions\InvalidFileException;
-use ExpoSDK\Expo\Exceptions\UnableToReadFileException;
-use ExpoSDK\Expo\Exceptions\UnableToWriteFileException;
+use ExpoSDK\Exceptions\FileDoesntExistException;
+use ExpoSDK\Exceptions\InvalidFileException;
+use ExpoSDK\Exceptions\UnableToReadFileException;
+use ExpoSDK\Exceptions\UnableToWriteFileException;
 
 class File
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace ExpoSDK\Expo\Drivers;
+namespace ExpoSDK\Drivers;
 
-use ExpoSDK\Expo\File;
+use ExpoSDK\File;
 
 class FileDriver extends Driver
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace ExpoSDK\Expo;
+namespace ExpoSDK;
 
 use Exception;
-use ExpoSDK\Expo\Exceptions\InvalidTokensException;
+use ExpoSDK\Exceptions\InvalidTokensException;
 
 class Expo
 {

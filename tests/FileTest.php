@@ -1,10 +1,10 @@
 <?php
 
-namespace ExpoSDK\Expo\Tests;
+namespace ExpoSDK\Tests;
 
-use ExpoSDK\Expo\Exceptions\UnableToReadFileException;
-use ExpoSDK\Expo\Exceptions\UnableToWriteFileException;
-use ExpoSDK\Expo\File;
+use ExpoSDK\Exceptions\UnableToReadFileException;
+use ExpoSDK\Exceptions\UnableToWriteFileException;
+use ExpoSDK\File;
 use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase

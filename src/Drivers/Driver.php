@@ -1,6 +1,6 @@
 <?php
 
-namespace ExpoSDK\Expo\Drivers;
+namespace ExpoSDK\Drivers;
 
 abstract class Driver
 {

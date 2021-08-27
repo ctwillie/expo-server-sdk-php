@@ -1,6 +1,6 @@
 <?php
 
-namespace ExpoSDK\Expo\Exceptions;
+namespace ExpoSDK\Exceptions;
 
 class UnableToWriteFileException extends \Exception
 {

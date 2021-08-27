@@ -1,12 +1,12 @@
 <?php
 
-namespace ExpoSDK\Expo\Tests;
+namespace ExpoSDK\Tests;
 
-use ExpoSDK\Expo\Exceptions\InvalidTokensException;
-use ExpoSDK\Expo\Exceptions\UnsupportedDriverException;
-use ExpoSDK\Expo\Expo;
-use ExpoSDK\Expo\ExpoMessage;
-use ExpoSDK\Expo\File;
+use ExpoSDK\Exceptions\InvalidTokensException;
+use ExpoSDK\Exceptions\UnsupportedDriverException;
+use ExpoSDK\Expo;
+use ExpoSDK\ExpoMessage;
+use ExpoSDK\File;
 use PHPUnit\Framework\TestCase;
 
 class ExpoTest extends TestCase

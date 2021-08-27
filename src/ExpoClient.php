@@ -1,6 +1,6 @@
 <?php
 
-namespace ExpoSDK\Expo;
+namespace ExpoSDK;
 
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;

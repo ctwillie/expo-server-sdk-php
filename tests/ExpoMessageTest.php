@@ -1,8 +1,8 @@
 <?php
 
-namespace ExpoSDK\Expo\Tests;
+namespace ExpoSDK\Tests;
 
-use ExpoSDK\Expo\ExpoMessage;
+use ExpoSDK\ExpoMessage;
 use PHPUnit\Framework\TestCase;
 
 class ExpoMessageTest extends TestCase
