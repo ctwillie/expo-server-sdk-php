@@ -9,8 +9,14 @@ use ExpoSDK\Expo\Exceptions\UnableToWriteFileException;
 
 class File
 {
+    /** @var string */
     private $path;
 
+    /**
+     * File constructor
+     *
+     * @param string $path
+     */
     public function __construct(string $path)
     {
         $this->path = $path;
@@ -96,16 +102,22 @@ class File
      */
     public function write(object $contents)
     {
+        $exception = new UnableToWriteFileException(sprintf(
+                'Unable to write file at %s.',
+                $this->path
+            ));
+
+        if (! file_exists($this->path)) {
+            throw $exception;
+        }
+
         $result = @file_put_contents(
             $this->path,
             json_encode($contents)
         );
 
         if ($result === false) {
-            throw new UnableToWriteFileException(sprintf(
-                'Unable to write file at %s.',
-                $this->path
-            ));
+            throw $exception;
         }
 
         return true;

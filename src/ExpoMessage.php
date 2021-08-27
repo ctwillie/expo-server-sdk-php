@@ -9,17 +9,39 @@ use Exception;
  */
 class ExpoMessage
 {
+    /** @var null */
     private $data = null;
+
+    /** @var null */
     private $title = null;
+
+    /** @var null */
     private $body = null;
+
+    /** @var null */
     private $ttl = null;
+
+    /** @var string */
     private $priority = 'default';
+
+    /** @var null */
     private $subtitle = null;
+
+    /** @var null */
     private $sound = null;
+
+    /** @var null */
     private $badge = null;
+
+    /** @var null */
     private $channelId = null;
+
+    /** @var null */
     private $categoryId = null;
+
+    /** @var bool */
     private $mutableContent = false;
+
 
     /**
      * Sets the data for the message
@@ -30,13 +52,10 @@ class ExpoMessage
      */
     public function setData(array $data)
     {
-        try {
-            $data = json_encode($data);
-        } catch (Exception $e) {
-            throw new Exception(sprintf(
-                'Data could not be json encoded. %s',
-                $e->getMessage()
-            ));
+        $data = json_encode($data);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception('Data could not be json encoded.');
         }
 
         $this->data = $data;
@@ -182,7 +201,9 @@ class ExpoMessage
     }
 
     /**
-     * https://www.amitmerchant.com/little-trick-loop-through-class-properties-php/
+     * Convert the message to an array
+     *
+     * @return array
      */
     public function toArray()
     {

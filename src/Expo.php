@@ -131,7 +131,9 @@ class Expo
             return (bool) $this->manager->getSubscriptions($channel);
         }
 
-        throw new Exception('You must provide a driver to interact with subscriptions.');
+        throw new Exception(
+            'You must provide a driver to interact with subscriptions.'
+        );
     }
 
     /**
@@ -194,7 +196,7 @@ class Expo
         });
 
         if (count($tokens) === 0) {
-            throw new \Exception('No valid expo tokens supplied.');
+            throw new \Exception('No valid expo tokens provided.');
         }
 
         $this->recipients = $tokens;

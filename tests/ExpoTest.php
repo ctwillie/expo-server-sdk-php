@@ -6,11 +6,23 @@ use ExpoSDK\Expo\Exceptions\InvalidTokensException;
 use ExpoSDK\Expo\Exceptions\UnsupportedDriverException;
 use ExpoSDK\Expo\Expo;
 use ExpoSDK\Expo\ExpoMessage;
+use ExpoSDK\Expo\File;
 use PHPUnit\Framework\TestCase;
 
 class ExpoTest extends TestCase
 {
     private $path = __DIR__ . '/storage/expo.json';
+    private $file = null;
+
+    protected function setUp(): void
+    {
+        $this->file = new File($this->path);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->file->empty();
+    }
 
     /** @test */
     public function expo_instantiates()
@@ -30,21 +42,6 @@ class ExpoTest extends TestCase
         $this->expectException(UnsupportedDriverException::class);
 
         Expo::driver('foo');
-    }
-
-    /** @test */
-    public function throws_exception_interacting_with_subscriptions_without_driver()
-    {
-        $expo = new Expo();
-
-        $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
-        $expo->subscribe('default', []);
-
-        $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
-        $expo->unsubscribe('default', []);
-
-        $this->expectExceptionMessage('You must provide a driver to interact with subscriptions.');
-        $expo->getSubscriptions('default', []);
     }
 
     /**
@@ -73,10 +70,28 @@ class ExpoTest extends TestCase
      * @test
      * @depends expo_instantiates
      */
-    public function send_method_returns_expo(Expo $expo)
+    public function expo_filters_non_valid_tokens(Expo $expo)
+    {
+        $valid = 'ExponentPushToken[yyy-yyy-yyy]';
+        $invalid = 'InvalidToken[xxx-xxx-xxx]';
+        $expo->to([$valid, $invalid]);
+
+        $this->assertSame(
+            [$valid],
+            $expo->getRecipients()
+        );
+    }
+
+    /**
+     * @test
+     * @depends expo_instantiates
+     */
+    public function methods_return_expo_instance(Expo $expo)
     {
         $expo = $expo->send(new ExpoMessage());
+        $this->assertInstanceOf(Expo::class, $expo);
 
+        $expo = $expo->setAccessToken('access-token');
         $this->assertInstanceOf(Expo::class, $expo);
     }
 
@@ -114,16 +129,16 @@ class ExpoTest extends TestCase
      * @test
      * @depends expo_instantiates
      */
-    public function expo_filters_non_valid_tokens(Expo $expo)
+    public function throws_exception_with_no_valid_tokens(Expo $expo)
     {
-        $valid = 'ExponentPushToken[yyy-yyy-yyy]';
-        $invalid = 'InvalidToken[xxx-xxx-xxx]';
-        $expo->to([$valid, $invalid]);
+        $valid = 'invalid-token[yyy-yyy-yyy]';
+        $invalid = 'another-invalid-token[xxx-xxx-xxx]';
 
-        $this->assertSame(
-            [$valid],
-            $expo->getRecipients()
+        $this->expectExceptionMessage(
+            'No valid expo tokens provided.'
         );
+
+        $expo->to([$valid, $invalid]);
     }
 
     /** @test */
@@ -144,6 +159,61 @@ class ExpoTest extends TestCase
         ];
 
         $this->assertSame($expected, $message->toArray());
+    }
+
+    /**
+     * @test
+     * @depends expo_instantiates
+     */
+    public function to_channel_method_sets_recipients(Expo $expo)
+    {
+        $token = 'ExponentPushToken[xxx-xxx-xxx]';
+        $channel = 'default';
+        $expo->subscribe($channel, $token);
+        $expo->toChannel($channel);
+
+        $this->assertSame(
+            [$token],
+            $expo->getRecipients($channel)
+        );
+    }
+
+    /**
+     * @test
+     * @depends expo_instantiates
+     */
+    public function can_determine_if_a_channel_has_subscriptions(Expo $expo)
+    {
+        $token = 'ExponentPushToken[xxx-xxx-xxx]';
+        $channel = 'default';
+        $expo->subscribe($channel, $token);
+
+        $hasSubscriptions = $expo->hasSubscriptions($channel);
+        $this->assertTrue($hasSubscriptions);
+
+        $expo->unsubscribe($channel, $token);
+
+        $hasSubscriptions = $expo->hasSubscriptions($channel);
+        $this->assertFalse($hasSubscriptions);
+    }
+
+    /** @test */
+    public function throws_exception_interacting_with_subscriptions_without_driver()
+    {
+        $expo = new Expo();
+        $message = 'You must provide a driver to interact with subscriptions.';
+
+        $this->expectExceptionMessage($message);
+        $expo->subscribe('default', []);
+
+        $this->expectExceptionMessage($message);
+        $expo->unsubscribe('default', []);
+
+        $this->expectExceptionMessage($message);
+        $expo->getSubscriptions('default', []);
+
+        $this->expectExceptionMessage($message);
+        $expo->hasSubscriptions('default', []);
     }
 
     /** @test */
