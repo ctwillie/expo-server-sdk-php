@@ -38,7 +38,7 @@ class ExpoMessageTest extends TestCase
                 "badge" => 0,
                 "channelId" => "default",
                 "categoryId" => "category-id",
-                "mutableContent" => true
+                "mutableContent" => true,
             ],
             $message->toArray()
         );

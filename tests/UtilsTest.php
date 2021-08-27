@@ -26,5 +26,4 @@ class UtilsTest extends TestCase
             Utils::isExpoPushToken('ExponentPushToken[aaaabbbbccccdddd]')
         );
     }
-
 }

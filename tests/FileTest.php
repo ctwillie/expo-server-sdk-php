@@ -67,7 +67,7 @@ class FileTest extends TestCase
         $file->read();
     }
 
-        /** @test */
+    /** @test */
     public function throws_exception_if_unable_to_write_file()
     {
         $file = fopen($this->testPath, "w");

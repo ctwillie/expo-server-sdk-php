@@ -42,7 +42,6 @@ class ExpoMessage
     /** @var bool */
     private $mutableContent = false;
 
-
     /**
      * Sets the data for the message
      *
