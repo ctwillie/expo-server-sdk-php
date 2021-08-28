@@ -1,8 +1,25 @@
-# expo-server-sdk-php
+# expo-server-sdk-php [![license](https://img.shields.io/github/license/ctwillie/expo-server-sdk-php)](LICENSE)
 
 Server-side library for working with Expo using PHP.
 
 If you have any problems with the code in this repository, feel free to [open an issue](https://github.com/ctwillie/expo-server-sdk-php/issues) or make a PR!
+
+<details open="open">
+<summary>Table of Contents</summary>
+
+- [Installation](#installation)
+- [Use Cases](#use-cases)
+- [Usage](#usage)
+    - [Cookiecutter template](#cookiecutter-template)
+    - [Manual setup](#manual-setup)
+    - [Variables reference](#variables-reference)
+- [Testing](#testing)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [License](#license)
+
+</details>
+
 
 ## Installation
 
@@ -12,7 +29,14 @@ You can install the package via composer:
 composer require ctwillie/expo-server-sdk-php
 ```
 
-## Usage
+## Use Cases
+This package was written with two main use cases in mind.
+1) Sending one time push notifications. Simply push a message to one or more tokens, then your done!
+2) And channel subscriptions, used to subscribe one or more tokens to a channel, then send push notifications to all tokens subscribed to that channel. Subscriptions are persisted until a token unsubscribes from a channel. Maybe unsubscribing upon the end users request.
+
+Keep this in mind as you decide which is the best use case for your back end.
+
+### One time notifications:
 
 ```php
 /**
@@ -33,15 +57,21 @@ $recipients = [
 ];
 
 $expo->send($message)->to($recipients)->push();
+```
+
+> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future.
 
 
+### Channel subscriptions:
+```php
 /**
- * Or, subscribe recipients to a channel, then push
- * notification messages to that channel.
+ * Subscribe tokens to a channel, then push notification
+ * messages to that channel. Subscriptions are
+ * persisted internally in a local file. Unsubscribe
+ * the token from the channel at any time.
  */
 
-// Use the "file" driver to interact with and persist your subscriptions.
-// The storage is handled internally using a local file.
+// Specify the file driver to persist subscriptions
 $expo = Expo::driver('file');
 
 $message = (new ExpoMessage())
@@ -56,18 +86,18 @@ $recipients = [
 ];
 
 $channel = 'news-letter';
-// The channel will be created automatically if it doesn't exist
+// The channel will be created automatically if it doesn't already exist
 $expo->subscribe($channel, $recipients);
 
 $expo->send($message)->toChannel($channel)->push();
 
 // You can unsubscribe one or more recipients
-// from a channel at any time.
+// from a channel.
 $expo->unsubscribe($channel, $recipients);
 ```
 
 ## Testing
-
+You can run the test suite via composer:
 ```bash
 composer test
 ```
@@ -80,15 +110,11 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-## Security Vulnerabilities
+## License
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ## Credits
 
 -   [Cedric Twillie](https://github.com/ctwillie)
 -   [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
