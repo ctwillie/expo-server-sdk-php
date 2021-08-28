@@ -103,9 +103,9 @@ class File
     public function write(object $contents)
     {
         $exception = new UnableToWriteFileException(sprintf(
-                'Unable to write file at %s.',
-                $this->path
-            ));
+            'Unable to write file at %s.',
+            $this->path
+        ));
 
         if (! file_exists($this->path)) {
             throw $exception;
