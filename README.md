@@ -9,10 +9,8 @@ If you have any problems with the code in this repository, feel free to [open an
 
 - [Installation](#installation)
 - [Use Cases](#use-cases)
-- [Usage](#usage)
-    - [Cookiecutter template](#cookiecutter-template)
-    - [Manual setup](#manual-setup)
-    - [Variables reference](#variables-reference)
+    - [One Time Notifications](#one-time-notifications)
+    - [Channel Subscriptions](#channel-subscriptions)
 - [Testing](#testing)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
