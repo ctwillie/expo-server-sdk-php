@@ -11,7 +11,7 @@ class FileTest extends TestCase
 {
     private $path = TEST_DIR . '/storage/expo.json';
     private $txtPath = TEST_DIR . '/storage/expo.txt';
-    private $testPath = TEST_DIR . './storage/test.json';
+    private $testPath = TEST_DIR . '/storage/test.json';
     private $file;
 
     protected function setUp(): void
