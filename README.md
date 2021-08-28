@@ -1,4 +1,4 @@
-# expo-server-sdk-php [![license](https://img.shields.io/github/license/ctwillie/expo-server-sdk-php)](LICENSE)
+# expo-server-sdk-php ![tests](https://github.com/ctwillie/expo-server-sdk-php/actions/workflows/tests.yml/badge.svg)
 
 Server-side library for working with Expo using PHP.
 
