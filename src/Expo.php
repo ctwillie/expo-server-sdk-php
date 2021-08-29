@@ -4,6 +4,7 @@ namespace ExpoSDK;
 
 use Exception;
 use ExpoSDK\Exceptions\InvalidTokensException;
+use ExpoSDK\ExpoResponse;
 
 class Expo
 {
@@ -207,12 +208,10 @@ class Expo
     /**
      * Send the message to the expo server
      *
-     * @return object|false
+     * @return ExpoResponse
      */
     public function push()
     {
-        $succeeded = true;
-
         if (is_null($this->message) || is_null($this->recipients)) {
             throw new Exception('You must have a message and recipients to push');
         }
@@ -221,17 +220,9 @@ class Expo
             return $this->message->toArray() + ['to' => $recipient];
         }, $this->recipients);
 
-        try {
-            $response = $this->client->post($messages);
-        } catch (Exception $e) {
-            $succeeded = false;
-        }
-
         $this->reset();
 
-        return $succeeded
-            ? json_decode($response->getBody())
-            : false;
+        return $this->client->post($messages);
     }
 
     /**

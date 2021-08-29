@@ -27,18 +27,31 @@ class ExpoClient
     }
 
     /**
-     * Send messages to the Expo api
+     * Sends push notification messages to the Expo api
      *
      * @param array $messages
-     * @return ResponseInterface
+     * @return ExpoResponse
      */
     public function post(array $messages)
     {
-        return $this->client->post(self::EXPO_URL, [
+        [$compressed, $body] = $this->compress(
+            json_encode($messages)
+        );
+
+        $headers = $this->getDefaultHeaders();
+
+        if ($compressed) {
+            $headers['Content-Encoding'] = 'gzip';
+        }
+
+        $response = $this->client->post(self::EXPO_URL, [
             'verify' => false,
-            'headers' => $this->getHeaders(),
-            'json' => $messages,
+            'http_errors' => false,
+            'headers' => $headers,
+            'body' => $body,
         ]);
+
+        return new ExpoResponse($response);
     }
 
     /**
@@ -57,7 +70,7 @@ class ExpoClient
      *
      * @return array
      */
-    private function getHeaders()
+    private function getDefaultHeaders()
     {
         $headers = [
             'Host' => 'exp.host',
@@ -71,5 +84,24 @@ class ExpoClient
         }
 
         return $headers;
+    }
+
+    /**
+     * Compresses a string if > 1kib in size
+     *
+     * @param string $value
+     * @return array
+     */
+    private function compress(string $value)
+    {
+        $compressed = false;
+
+        if ((strlen($value) / 1024) >= 1) {
+            // returns false if compression fails
+            $value = gzencode($value, 6) ?? $value;
+            $compressed = true;
+        }
+
+        return [$compressed, $value];
     }
 }

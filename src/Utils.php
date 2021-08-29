@@ -22,6 +22,20 @@ class Utils
     }
 
     /**
+     * Determine if an array is an asociative array
+     *
+     * The check determines if the array has sequential numeric
+     * keys. If it does not, it is an associative array.
+     *
+     * @param array $arr
+     * @return bool
+     */
+    public static function isAssoc(array $arr)
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+    /**
      * Check if a string starts with another
      *
      * @param string $haystack

@@ -2,11 +2,8 @@
 
 namespace ExpoSDK;
 
-use Exception;
+use ExpoSDK\Exceptions\ExpoMessageException;
 
-/**
- * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
- */
 class ExpoMessage
 {
     /** @var null */
@@ -47,14 +44,20 @@ class ExpoMessage
      *
      * @param array $data
      * @return self
-     * @throws Exception
+     * @throws ExpoMessageException
      */
     public function setData(array $data)
     {
+        if (! Utils::isAssoc($data)) {
+            throw new ExpoMessageException(
+                'Message data must be an associative array.'
+            );
+        }
+
         $data = json_encode($data);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Data could not be json encoded.');
+            throw new ExpoMessageException('Data could not be json encoded.');
         }
 
         $this->data = $data;
@@ -106,14 +109,16 @@ class ExpoMessage
      *
      * @param string $priority
      * @return self
-     * @throws Exception
+     * @throws ExpoMessageException
      */
     public function setPriority(string $priority)
     {
         $priority = strtolower($priority);
 
         if (! in_array($priority, ['default', 'normal', 'high'])) {
-            throw new Exception('Priority must be default, normal or high.');
+            throw new ExpoMessageException(
+                'Priority must be default, normal or high.'
+            );
         }
 
         $this->priority = $priority;
