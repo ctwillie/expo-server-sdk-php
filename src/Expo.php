@@ -4,7 +4,6 @@ namespace ExpoSDK;
 
 use Exception;
 use ExpoSDK\Exceptions\InvalidTokensException;
-use ExpoSDK\ExpoResponse;
 
 class Expo
 {

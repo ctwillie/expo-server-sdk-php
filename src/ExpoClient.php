@@ -3,7 +3,6 @@
 namespace ExpoSDK;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 
 class ExpoClient
 {
