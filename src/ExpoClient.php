@@ -95,7 +95,7 @@ class ExpoClient
     {
         $compressed = false;
 
-        if ((strlen($value) / 1024) >= 1) {
+        if ((strlen($value) / 1024) > 1) {
             // returns false if compression fails
             $value = gzencode($value, 6) ?? $value;
             $compressed = true;

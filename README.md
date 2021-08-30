@@ -7,17 +7,22 @@ If you have any problems with the code in this repository, feel free to [open an
 <details open="open">
 <summary>Table of Contents</summary>
 
+- [Testing](#testing)
 - [Installation](#installation)
 - [Use Cases](#use-cases)
     - [One Time Notifications](#one-time-notifications)
     - [Channel Subscriptions](#channel-subscriptions)
-- [Testing](#testing)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
 - [License](#license)
 
 </details>
 
+## Testing
+You can run the test suite via composer:
+```bash
+composer test
+```
 
 ## Installation
 
@@ -57,7 +62,7 @@ $recipients = [
 $expo->send($message)->to($recipients)->push();
 ```
 
-> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future.
+> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future to handle this use case.
 
 
 ### Channel subscriptions:
@@ -92,12 +97,6 @@ $expo->send($message)->toChannel($channel)->push();
 // You can unsubscribe one or more recipients
 // from a channel.
 $expo->unsubscribe($channel, $recipients);
-```
-
-## Testing
-You can run the test suite via composer:
-```bash
-composer test
 ```
 
 ## Changelog

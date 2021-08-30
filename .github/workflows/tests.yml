@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: true
@@ -46,3 +46,12 @@ jobs:
 
       - name: Execute Tests
         run: composer test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ./build/logs/
+          files: clover.xml
+          flags: tests
+          fail_ci_if_error: true
+          verbose: true
