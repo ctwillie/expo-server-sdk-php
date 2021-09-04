@@ -23,7 +23,7 @@ class ExpoResponseTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client([
             'handler' => $handlerStack,
-            'http_errors' => false
+            'http_errors' => false,
         ]);
 
         $response = $client->request('GET', '/');

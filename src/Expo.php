@@ -2,7 +2,6 @@
 
 namespace ExpoSDK;
 
-use Exception;
 use ExpoSDK\Exceptions\ExpoException;
 use ExpoSDK\Exceptions\InvalidTokensException;
 

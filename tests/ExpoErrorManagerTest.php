@@ -18,7 +18,7 @@ class ExpoErrorManagerTest extends TestCase
             [
                 'message' => 'Some expo error',
                 'code' => 400,
-            ]
+            ],
         ],
     ];
 
@@ -113,7 +113,7 @@ class ExpoErrorManagerTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $client = new Client([
             'handler' => $handlerStack,
-            'http_errors' => false
+            'http_errors' => false,
         ]);
 
         $errors = new ExpoErrorManager();
