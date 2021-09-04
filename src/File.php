@@ -12,11 +12,6 @@ class File
     /** @var string */
     private $path;
 
-    /**
-     * File constructor
-     *
-     * @param string $path
-     */
     public function __construct(string $path)
     {
         $this->path = $path;
@@ -39,32 +34,24 @@ class File
 
     /**
      * Check if the file path is valid and exists
-     *
-     * @param string $path
-     * @return bool
      */
-    private function isValidPath(string $path)
+    private function isValidPath(string $path): bool
     {
         return strlen($path) > 0 && file_exists($path);
     }
 
     /**
      * Check if the file has a json extension
-     *
-     * @param string $path
-     * @return bool
      */
-    private function isJson(string $path)
+    private function isJson(string $path): bool
     {
         return Utils::strEndsWith($path, '.json');
     }
 
     /**
      * Ensures the file contains an object
-     *
-     * @return void
      */
-    private function validateContents()
+    private function validateContents(): void
     {
         $contents = $this->read();
 
@@ -76,7 +63,7 @@ class File
     /**
      * Reads the files contents
      *
-     * @return object
+     * @return object|null
      * @throws UnableToReadFileException
      */
     public function read()
@@ -96,11 +83,9 @@ class File
     /**
      * Writes content to the file
      *
-     * @param object $contents
-     * @return bool
      * @throws UnableToWriteFileException
      */
-    public function write(object $contents)
+    public function write(object $contents): bool
     {
         $exception = new UnableToWriteFileException(sprintf(
             'Unable to write file at %s.',
@@ -125,10 +110,8 @@ class File
 
     /**
      * Empties the files contents
-     *
-     * @return void
      */
-    public function empty()
+    public function empty(): void
     {
         $this->write(new \stdClass());
     }

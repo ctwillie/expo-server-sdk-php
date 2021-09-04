@@ -1,4 +1,4 @@
-# expo-server-sdk-php ![tests](https://github.com/ctwillie/expo-server-sdk-php/actions/workflows/tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ctwillie/expo-server-sdk-php/branch/master/graph/badge.svg?token=8QO3NL131R)](https://codecov.io/gh/ctwillie/expo-server-sdk-php)
+# expo-server-sdk-php ![tests](https://github.com/ctwillie/expo-server-sdk-php/actions/workflows/tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ctwillie/expo-server-sdk-php/branch/master/graph/badge.svg?token=8QO3NL131R)](https://codecov.io/gh/ctwillie/expo-server-sdk-php) ![GitHub](https://img.shields.io/github/license/ctwillie/expo-server-sdk-php?color=%2300CED1)
 
 Server-side library for working with Expo using PHP.
 
@@ -7,19 +7,21 @@ If you have any problems with the code in this repository, feel free to [open an
 <details open="open">
 <summary>Table of Contents</summary>
 
-- [Testing](#testing)
-- [Installation](#installation)
-- [Use Cases](#use-cases)
-    - [One Time Notifications](#one-time-notifications)
-    - [Channel Subscriptions](#channel-subscriptions)
-- [Changelog](#changelog)
-- [Contributing](#contributing)
-- [License](#license)
+-   [Testing](#testing)
+-   [Installation](#installation)
+-   [Use Cases](#use-cases)
+    -   [One Time Notifications](#one-time-notifications)
+    -   [Channel Subscriptions](#channel-subscriptions)
+-   [Changelog](#changelog)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 </details>
 
 ## Testing
+
 You can run the test suite via composer:
+
 ```bash
 composer test
 ```
@@ -33,9 +35,11 @@ composer require ctwillie/expo-server-sdk-php
 ```
 
 ## Use Cases
+
 This package was written with two main use cases in mind.
-1) Sending one time push notifications. Simply push a message to one or more tokens, then your done!
-2) And channel subscriptions, used to subscribe one or more tokens to a channel, then send push notifications to all tokens subscribed to that channel. Subscriptions are persisted until a token unsubscribes from a channel. Maybe unsubscribing upon the end users request.
+
+1. Sending one time push notifications. Simply push a message to one or more tokens, then your done!
+2. And channel subscriptions, used to subscribe one or more tokens to a channel, then send push notifications to all tokens subscribed to that channel. Subscriptions are persisted until a token unsubscribes from a channel. Maybe unsubscribing upon the end users request.
 
 Keep this in mind as you decide which is the best use case for your back end.
 
@@ -64,8 +68,8 @@ $expo->send($message)->to($recipients)->push();
 
 > :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future to handle this use case.
 
-
 ### Channel subscriptions:
+
 ```php
 /**
  * Subscribe tokens to a channel, then push notification

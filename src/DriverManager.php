@@ -31,7 +31,12 @@ class DriverManager
             ->buildDriver($config);
     }
 
-    private function validateDriver(string $driver)
+    /**
+     * Validates the driver against supported drivers
+     *
+     * @throws UnsupportedDriverException
+     */
+    private function validateDriver(string $driver): self
     {
         $this->driverKey = strtolower($driver);
 
@@ -45,7 +50,10 @@ class DriverManager
         return $this;
     }
 
-    private function buildDriver(array $config)
+    /**
+     * Builds the driver instance
+     */
+    private function buildDriver(array $config): void
     {
         if ($this->driverKey === 'file') {
             $this->driver = new FileDriver($config);
@@ -55,10 +63,9 @@ class DriverManager
     /**
      * Subscribes tokens to a channel
      *
-     * @param string $channel
      * @param null|string|array $tokens
      */
-    public function subscribe(string $channel, $tokens)
+    public function subscribe(string $channel, $tokens): bool
     {
         return $this->driver->store(
             $this->normalizeChannel($channel),
@@ -69,7 +76,6 @@ class DriverManager
     /**
      * Get a channels tokens
      *
-     * @param string $channel
      * @return array|null
      */
     public function getSubscriptions(string $channel)
@@ -82,10 +88,9 @@ class DriverManager
     /**
      * Unsubscribes tokens from a channel
      *
-     * @param string $channel
      * @param null|string|array $tokens
      */
-    public function unsubscribe(string $channel, $tokens)
+    public function unsubscribe(string $channel, $tokens): bool
     {
         return $this->driver->forget(
             $this->normalizeChannel($channel),
@@ -95,11 +100,8 @@ class DriverManager
 
     /**
      * Normalizes the channel name
-     *
-     * @param string $channel
-     * @return string
      */
-    private function normalizeChannel(string $channel)
+    private function normalizeChannel(string $channel): string
     {
         return trim(strtolower($channel));
     }
@@ -108,10 +110,9 @@ class DriverManager
      * Normalizes tokens to be an array
      *
      * @param string|array $tokens
-     * @return array
      * @throws InvalidTokensException
      */
-    private function normalizeTokens($tokens)
+    private function normalizeTokens($tokens): array
     {
         if (is_array($tokens) && count($tokens) > 0) {
             return $tokens;

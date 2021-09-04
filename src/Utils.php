@@ -8,9 +8,8 @@ class Utils
      * Check if a value is a valid Expo push token
      *
      * @param mixed $value
-     * @return bool
      */
-    public static function isExpoPushToken($value)
+    public static function isExpoPushToken($value): bool
     {
         if (! is_string($value) || strlen($value) < 15) {
             return false;
@@ -25,24 +24,17 @@ class Utils
      * Determine if an array is an asociative array
      *
      * The check determines if the array has sequential numeric
-     * keys. If it does not, it is an associative array.
-     *
-     * @param array $arr
-     * @return bool
+     * keys. If it does not, it is considered an associative array.
      */
-    public static function isAssoc(array $arr)
+    public static function isAssoc(array $arr): bool
     {
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**
      * Check if a string starts with another
-     *
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
      */
-    public static function strStartsWith(string $haystack, string $needle)
+    public static function strStartsWith(string $haystack, string $needle): bool
     {
         return (string)$needle !== '' &&
             strncmp($haystack, $needle, strlen($needle)) === 0;
@@ -50,12 +42,8 @@ class Utils
 
     /**
      * Check if a string ends with another
-     *
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
      */
-    public static function strEndsWith(string $haystack, string $needle)
+    public static function strEndsWith(string $haystack, string $needle): bool
     {
         return $needle !== '' &&
             substr($haystack, -strlen($needle)) === (string) $needle;

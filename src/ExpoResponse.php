@@ -12,11 +12,6 @@ class ExpoResponse
     /** @var int */
     private $statusCode;
 
-    /**
-     * ExpoResponse constructor
-     *
-     * @param ResponseInterface $response
-     */
     public function __construct(ResponseInterface $response)
     {
         $this->response = json_decode(
@@ -29,10 +24,8 @@ class ExpoResponse
 
     /**
      * Checks if the request succeeded
-     *
-     * @return bool
      */
-    public function ok()
+    public function ok(): bool
     {
         return $this->getStatusCode() === 200 &&
             ! array_key_exists('errors', $this->response);
@@ -40,16 +33,14 @@ class ExpoResponse
 
     /**
      * Get the http response status code
-     *
-     * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
     /**
-     * Gets the data from the expo response if it exists
+     * Gets the data from the expo response
      *
      * @return array|null
      */
@@ -57,18 +48,6 @@ class ExpoResponse
     {
         return $this->ok()
             ? $this->response['data']
-            : null;
-    }
-
-    /**
-     * Gets the errors from the expo response if it exists
-     *
-     * @return array|null
-     */
-    public function getErrors()
-    {
-        return ! $this->ok()
-            ? $this->response['errors']
             : null;
     }
 }

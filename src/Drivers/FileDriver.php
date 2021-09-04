@@ -25,7 +25,10 @@ class FileDriver extends Driver
         $this->build($config);
     }
 
-    protected function build(array $config)
+    /**
+     * Builds the driver instance
+     */
+    protected function build(array $config): void
     {
         $path = $config['path'] ?? $this->path;
 
@@ -34,12 +37,8 @@ class FileDriver extends Driver
 
     /**
      * Stores tokens for a channel
-     *
-     * @param string $channel
-     * @param array $tokens
-     * @return bool
      */
-    public function store(string $channel, array $tokens)
+    public function store(string $channel, array $tokens): bool
     {
         $store = $this->file->read();
         $subs = $store->{$channel} ?? null;
@@ -53,7 +52,6 @@ class FileDriver extends Driver
     /**
      * Retrieves a channels subscriptions
      *
-     * @param string $channel
      * @return array|null
      */
     public function retrieve(string $channel)
@@ -65,12 +63,8 @@ class FileDriver extends Driver
 
     /**
      * Removes subscriptions from a channel
-     *
-     * @param string $channel
-     * @param array $tokens
-     * @return bool
      */
-    public function forget(string $channel, array $tokens)
+    public function forget(string $channel, array $tokens): bool
     {
         $store = $this->file->read();
         $subs = $store->{$channel} ?? null;
@@ -92,18 +86,5 @@ class FileDriver extends Driver
         }
 
         return $this->file->write($store);
-    }
-
-    /**
-     * Determine if a channel exists
-     *
-     * @param string $channel
-     * @return bool
-     */
-    private function channelExists(string $channel)
-    {
-        $subs = $this->file->read();
-
-        return (bool) ($subs->{$channel} ?? null);
     }
 }

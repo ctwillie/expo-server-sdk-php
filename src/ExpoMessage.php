@@ -42,11 +42,9 @@ class ExpoMessage
     /**
      * Sets the data for the message
      *
-     * @param array $data
-     * @return self
      * @throws ExpoMessageException
      */
-    public function setData(array $data)
+    public function setData(array $data): self
     {
         if (! Utils::isAssoc($data)) {
             throw new ExpoMessageException(
@@ -67,11 +65,8 @@ class ExpoMessage
 
     /**
      * Sets the title to display in the notification
-     *
-     * @param string $title
-     * @return self
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -80,11 +75,8 @@ class ExpoMessage
 
     /**
      * Sets the message to display in the notification
-     *
-     * @param string $body
-     * @return self
      */
-    public function setBody(string $body)
+    public function setBody(string $body): self
     {
         $this->body = $body;
 
@@ -93,11 +85,8 @@ class ExpoMessage
 
     /**
      * Sets the number of seconds for which the message may be kept around for redelivery
-     *
-     * @param int $ttl
-     * @return self
      */
-    public function setTtl(int $ttl)
+    public function setTtl(int $ttl): self
     {
         $this->ttl = $ttl;
 
@@ -107,11 +96,9 @@ class ExpoMessage
     /**
      * Sets the delivery priority of the message, either 'default', 'normal' or 'high
      *
-     * @param string $priority
-     * @return self
      * @throws ExpoMessageException
      */
-    public function setPriority(string $priority)
+    public function setPriority(string $priority): self
     {
         $priority = strtolower($priority);
 
@@ -128,11 +115,8 @@ class ExpoMessage
 
     /**
      * Sets the subtitle to display in the notification below the title
-     *
-     * @param string $subtitle
-     * @return self
      */
-    public function setSubtitle(string $subtitle)
+    public function setSubtitle(string $subtitle): self
     {
         $this->subtitle = $subtitle;
 
@@ -141,11 +125,8 @@ class ExpoMessage
 
     /**
      * Play a sound when the recipient receives the notification
-     *
-     * @return self
-     * @return self
      */
-    public function playSound()
+    public function playSound(): self
     {
         $this->sound = 'default';
 
@@ -154,11 +135,8 @@ class ExpoMessage
 
     /**
      * Set the number to display in the badge on the app icon
-     *
-     * @param int $badge
-     * @return self
      */
-    public function setBadge(int $badge)
+    public function setBadge(int $badge): self
     {
         $this->badge = $badge;
 
@@ -167,11 +145,8 @@ class ExpoMessage
 
     /**
      * Set the ID of the Notification Channel through which to display this notification
-     *
-     * @param string $channelId
-     * @return self
      */
-    public function setChannelId(string $channelId)
+    public function setChannelId(string $channelId): self
     {
         $this->channelId = $channelId;
 
@@ -180,11 +155,8 @@ class ExpoMessage
 
     /**
      * Set the ID of the notification category that this notification is associated with
-     *
-     * @param string $categoryId
-     * @return self
      */
-    public function setCategoryId(string $categoryId)
+    public function setCategoryId(string $categoryId): self
     {
         $this->categoryId = $categoryId;
 
@@ -193,11 +165,8 @@ class ExpoMessage
 
     /**
      * Set whether the notification can be intercepted by the client app
-     *
-     * @param bool $mutable
-     * @return self
      */
-    public function setMutableContent(bool $mutable)
+    public function setMutableContent(bool $mutable): self
     {
         $this->mutableContent = $mutable;
 
@@ -206,10 +175,8 @@ class ExpoMessage
 
     /**
      * Convert the message to an array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $attributes = [];
 
