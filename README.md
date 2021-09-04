@@ -1,4 +1,4 @@
-# expo-server-sdk-php ![tests](https://github.com/ctwillie/expo-server-sdk-php/actions/workflows/tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ctwillie/expo-server-sdk-php/branch/master/graph/badge.svg?token=8QO3NL131R)](https://codecov.io/gh/ctwillie/expo-server-sdk-php) ![GitHub](https://img.shields.io/github/license/ctwillie/expo-server-sdk-php?color=%2300CED1)
+# expo-server-sdk-php ![tests](https://github.com/ctwillie/expo-server-sdk-php/actions/workflows/tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ctwillie/expo-server-sdk-php/branch/master/graph/badge.svg?token=8QO3NL131R)](https://codecov.io/gh/ctwillie/expo-server-sdk-php) ![GitHub](https://img.shields.io/github/license/ctwillie/expo-server-sdk-php?color=%2361c82e)
 
 Server-side library for working with Expo using PHP.
 
