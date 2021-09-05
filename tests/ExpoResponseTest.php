@@ -15,8 +15,8 @@ class ExpoResponseTest extends TestCase
     private $data = [
         [
             'status' => 'ok',
-            'id' => 'xxxxxx-xxxxx-xxxxx-xxxxxxx'
-        ]
+            'id' => 'xxxxxx-xxxxx-xxxxx-xxxxxxx',
+        ],
     ];
 
     /** @test */

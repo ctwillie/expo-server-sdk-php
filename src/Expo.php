@@ -213,7 +213,7 @@ class Expo
      */
     public function getReceipts(array $ticketIds): ExpoResponse
     {
-        $ticketIds = array_filter($ticketIds, function($id) {
+        $ticketIds = array_filter($ticketIds, function ($id) {
             return is_string($id);
         });
 
