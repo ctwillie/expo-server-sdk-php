@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 
 class ExpoClient
 {
-    public const EXPO_URL = 'https://exp.host/--/api/v2/push/send';
+    public const EXPO_BASE_URL = 'https://exp.host/--/api/v2';
 
     /**
      * The Expo access token
@@ -32,17 +32,17 @@ class ExpoClient
     /**
      * Sends push notification messages to the Expo api
      */
-    public function post(array $messages): ExpoResponse
+    public function sendPushNotifications(array $messages): ExpoResponse
     {
         $actualMessageCount = $this->getActualMessageCount($messages);
-        [$compressed, $body] = $this->compress($messages);
+        [$compressed, $body] = $this->compressBody($messages);
         $headers = $this->getDefaultHeaders();
 
         if ($compressed) {
             $headers['Content-Encoding'] = 'gzip';
         }
 
-        $response = $this->client->post(self::EXPO_URL, [
+        $response = $this->client->post(self::EXPO_BASE_URL . '/push/send', [
             'verify' => false,
             'http_errors' => false,
             'headers' => $headers,
@@ -79,6 +79,48 @@ class ExpoClient
     }
 
     /**
+     * Retrieves push notification receipts from the Expo api
+     *
+     * @throws ExpoException
+     */
+    public function getPushNotificationReceipts(array $ticketIds): ExpoResponse
+    {
+        [$compressed, $body] = $this->compressBody([
+            'ids' => $ticketIds,
+        ]);
+
+        $headers = $this->getDefaultHeaders();
+
+        if ($compressed) {
+            $headers['Content-Encoding'] = 'gzip';
+        }
+
+        $response = $this->client->post(self::EXPO_BASE_URL . '/push/getReceipts', [
+            'verify' => false,
+            'http_errors' => false,
+            'headers' => $headers,
+            'body' => $body,
+        ]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new ExpoException(sprintf(
+                'Request failed with status code %s',
+                $response->getStatusCode()
+            ));
+        }
+
+        $result = json_decode($response->getBody(), true);
+
+        if (! array_key_exists('data', $result) || ! is_array($result['data'])) {
+            throw new ExpoException(
+                'Expected Expo to respond with a map from receipt IDs to receipts but received data of another type'
+            );
+        }
+
+        return new ExpoResponse($response);
+    }
+
+    /**
      * Set the Expo access token
      */
     public function setAccessToken(string $accessToken): void
@@ -108,7 +150,7 @@ class ExpoClient
     /**
      * Compresses a string if > 1kib in size
      */
-    private function compress(array $value): array
+    private function compressBody(array $value): array
     {
         $value = json_encode($value);
         $compressed = false;

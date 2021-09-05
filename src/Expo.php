@@ -203,7 +203,21 @@ class Expo
 
         $this->reset();
 
-        return $this->client->post($messages);
+        return $this->client->sendPushNotifications($messages);
+    }
+
+    /**
+     * Fetches the push notification receipts from the expo server
+     *
+     * @throws ExpoException
+     */
+    public function getReceipts(array $ticketIds): ExpoResponse
+    {
+        $ticketIds = array_filter($ticketIds, function($id) {
+            return is_string($id);
+        });
+
+        return $this->client->getPushNotificationReceipts($ticketIds);
     }
 
     /**

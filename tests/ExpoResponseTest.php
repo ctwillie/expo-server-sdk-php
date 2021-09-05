@@ -11,12 +11,20 @@ use Psr\Http\Message\ResponseInterface;
 
 class ExpoResponseTest extends TestCase
 {
+    /** @var array */
+    private $data = [
+        [
+            'status' => 'ok',
+            'id' => 'xxxxxx-xxxxx-xxxxx-xxxxxxx'
+        ]
+    ];
+
     /** @test */
     public function expo_response_will_instantiate()
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode([
-                'data' => ['foo' => 'bar'],
+                'data' => $this->data,
             ])),
         ]);
 
@@ -66,7 +74,7 @@ class ExpoResponseTest extends TestCase
     public function can_retrieve_data_from_successsful_response(ExpoResponse $response)
     {
         $this->assertSame(
-            ['foo' => 'bar'],
+            $this->data,
             $response->getData()
         );
     }
