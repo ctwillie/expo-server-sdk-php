@@ -10,8 +10,11 @@ If you have any problems with the code in this repository, feel free to [open an
 -   [Testing](#testing)
 -   [Installation](#installation)
 -   [Use Cases](#use-cases)
-    -   [One Time Notifications](#one-time-notifications)
-    -   [Channel Subscriptions](#channel-subscriptions)
+-   [Compose a Message](#composing-a-message)
+-   [Sending a Message](#sending-a-push-notification)
+-   [Channel Subscriptions](#channel-subscriptions)
+-   [Expo Responses](#expo-responses)
+-   [Retrieving Push Receipts](#retrieving-push-receipts)
 -   [Changelog](#changelog)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -38,25 +41,35 @@ composer require ctwillie/expo-server-sdk-php
 
 This package was written with two main use cases in mind.
 
-1. Sending one time push notifications. Simply push a message to one or more tokens, then your done!
+1. Sending a push notification message to one or more recipients, then your done! The most obvious use case.
 2. And channel subscriptions, used to subscribe one or more tokens to a channel, then send push notifications to all tokens subscribed to that channel. Subscriptions are persisted until a token unsubscribes from a channel. Maybe unsubscribing upon the end users request.
 
 Keep this in mind as you decide which is the best use case for your back end.
 
-### One time notifications:
+## Composing a message
+
+Compose a push notification message to send using all options from the [Expo docs](https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format).
 
 ```php
-/**
- * Send a one time push notification message to
- * one or more recipients.
- */
-$expo = new Expo();
 
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
+    ->setSubtitle('Message sub title')
     ->setBody('The notification message body')
     ->setChannelId('default')
+    ->setBadge(0)
     ->playSound();
+```
+
+## Sending a push notification:
+
+Compose a message then send to one or more recipients.
+
+```php
+$expo = new Expo();
+
+// composed message, see above
+$message;
 
 $recipients = [
     'ExponentPushToken[xxxx-xxxx-xxxx]',
@@ -66,41 +79,61 @@ $recipients = [
 $expo->send($message)->to($recipients)->push();
 ```
 
-> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future to handle this use case.
+## Channel subscriptions:
 
-### Channel subscriptions:
+Subscribe tokens to a channel, then push notification messages to that channel. Subscriptions are persisted internally in a local file so you don't have to worry about this yourself. Unsubscribe the token from the channel at any time to stop messages to that recipient.
+
+> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future to handle this use case.
 
 ```php
 /**
- * Subscribe tokens to a channel, then push notification
- * messages to that channel. Subscriptions are
- * persisted internally in a local file. Unsubscribe
- * the token from the channel at any time.
+ * Specify the file driver to persist subscriptions internally.
+ * More drivers coming soon, (database, redis, custom local file)
  */
-
-// Specify the file driver to persist subscriptions
 $expo = Expo::driver('file');
 
-$message = (new ExpoMessage())
-    ->setTitle('Message Title')
-    ->setBody('The notification message body')
-    ->setChannelId('default')
-    ->playSound();
+// composed message, see above
+$message;
 
 $recipients = [
     'ExponentPushToken[xxxx-xxxx-xxxx]',
     'ExponentPushToken[yyyy-yyyy-yyyy]'
 ];
 
+// name your channel anything you'd like
 $channel = 'news-letter';
-// The channel will be created automatically if it doesn't already exist
+// the channel will be created automatically if it doesn't already exist
 $expo->subscribe($channel, $recipients);
 
 $expo->send($message)->toChannel($channel)->push();
 
-// You can unsubscribe one or more recipients
-// from a channel.
+// you can unsubscribe one or more recipients from a channel.
 $expo->unsubscribe($channel, $recipients);
+```
+
+## Expo responses
+
+Get the data returned from successful responses from the Expo server.
+
+```php
+
+$response = $expo->send($message)->to($recipients)->push();
+
+$data = $response->getData();
+```
+
+## Retrieving push receipts
+
+Retrieve the push receipts use the ticket ids from the Expo server.
+
+```php
+$ticketIds = [
+    'xxxx-xxxx-xxxx-xxxx',
+    'yyyy-yyyy-yyyy-yyyy'
+];
+
+$response = $expo->getReceipts($ticketIds);
+$data = $response->getData();
 ```
 
 ## Changelog
