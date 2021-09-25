@@ -10,7 +10,7 @@ If you have any problems with the code in this repository, feel free to [open an
 -   [Testing](#testing)
 -   [Installation](#installation)
 -   [Use Cases](#use-cases)
--   [Compose a Message](#composing-a-message)
+-   [Composing a Message](#composing-a-message)
 -   [Sending a Message](#sending-a-push-notification)
 -   [Channel Subscriptions](#channel-subscriptions)
 -   [Expo Responses](#expo-responses)
@@ -48,7 +48,7 @@ Keep this in mind as you decide which is the best use case for your back end.
 
 ## Composing a message
 
-Compose a push notification message to send using all options from the [Expo docs](https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format).
+Compose a push notification message to send using options from the [Expo docs](https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format).
 
 ```php
 
@@ -124,7 +124,7 @@ $data = $response->getData();
 
 ## Retrieving push receipts
 
-Retrieve the push receipts use the ticket ids from the Expo server.
+Retrieve the push receipts using the ticket ids from the Expo server.
 
 ```php
 $ticketIds = [
