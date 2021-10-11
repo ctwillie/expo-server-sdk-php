@@ -51,11 +51,12 @@ Keep this in mind as you decide which is the best use case for your back end.
 Compose a push notification message to send using options from the [Expo docs](https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format).
 
 ```php
+use ExpoSDK\ExpoMessage;
 
 $message = (new ExpoMessage())
     ->setTitle('Message Title')
-    ->setSubtitle('Message sub title')
     ->setBody('The notification message body')
+    ->setData(['id' => 1])
     ->setChannelId('default')
     ->setBadge(0)
     ->playSound();
@@ -66,6 +67,8 @@ $message = (new ExpoMessage())
 Compose a message then send to one or more recipients.
 
 ```php
+use ExpoSDK\Expo;
+
 $expo = new Expo();
 
 // composed message, see above
@@ -90,6 +93,8 @@ Subscribe tokens to a channel, then push notification messages to that channel. 
  * Specify the file driver to persist subscriptions internally.
  * More drivers coming soon, (database, redis, custom local file)
  */
+use ExpoSDK\Expo;
+
 $expo = Expo::driver('file');
 
 // composed message, see above
