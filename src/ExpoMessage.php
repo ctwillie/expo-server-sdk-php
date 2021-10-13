@@ -42,20 +42,17 @@ class ExpoMessage
     /**
      * Sets the data for the message
      *
+     * @param object|array|null $data
+     *
      * @throws ExpoMessageException
      */
-    public function setData(array $data): self
+    public function setData($data = null): self
     {
-        if (! Utils::isAssoc($data)) {
+        // allow null, objects and associative arrays
+        if ($data != null && !is_object($data) && !Utils::isAssoc($data)) {
             throw new ExpoMessageException(
-                'Message data must be an associative array.'
+                'Message data must be either associative array, object or null.'
             );
-        }
-
-        $data = json_encode($data);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ExpoMessageException('Data could not be json encoded.');
         }
 
         $this->data = $data;
