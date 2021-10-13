@@ -222,7 +222,7 @@ class Expo
          */
         foreach ($this->messages as $message) {
             $message = $message->toArray();
-            foreach (Utils::arrayWrap($message['to']) as $token) {
+            foreach (Utils::arrayWrap($message['to'] ?? $this->recipients) as $token) {
                 $messages[] = array_merge($message, ['to' => $token]);
             }
         }
