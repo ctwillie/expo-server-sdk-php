@@ -168,6 +168,13 @@ class ExpoClient
      */
     private function getActualMessageCount(array $messages): int
     {
-        return count($messages);
+        $count = 0;
+
+        foreach ($messages as $message) {
+            $recipients = Utils::arrayWrap($message['to']);
+            $count += count($recipients);
+        }
+
+        return $count;
     }
 }
