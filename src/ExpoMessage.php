@@ -130,6 +130,17 @@ class ExpoMessage
      */
     private $mutableContent = false;
 
+    public function __construct(array $args = []) {
+        foreach ($args as $key => $value) {
+            $method = 'set' . ucfirst($key);
+
+            // all properties without setters will be skipped
+            if (method_exists($this, $method)) {
+                $this->{$method}($value);
+            }
+        }
+    }
+
     /**
      * Set recipients of the message
      *
