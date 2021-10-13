@@ -4,9 +4,12 @@ namespace ExpoSDK;
 
 use ExpoSDK\Exceptions\ExpoException;
 use ExpoSDK\Exceptions\InvalidTokensException;
+use ExpoSDK\Traits\Macroable;
 
 class Expo
 {
+    use Macroable;
+
     /**
      * @var DriverManager
      */
@@ -36,6 +39,22 @@ class Expo
         $this->manager = $manager;
 
         $this->client = new ExpoClient();
+    }
+
+    /**
+     * Registers macro for handling each token with DeviceNotRegistered error separately
+     * @param $callback
+     */
+    public static function addDeviceNotRegisteredHandler($callback) {
+        self::macro('deviceNotRegistered', $callback);
+    }
+
+    /**
+     * Registers macro for handling all tokens with DeviceNotRegistered errors
+     * @param $callback
+     */
+    public static function addDevicesNotRegisteredHandler($callback) {
+        self::macro('devicesNotRegistered', $callback);
     }
 
     /**
@@ -178,16 +197,35 @@ class Expo
             throw new ExpoException('You must have messages to push');
         }
 
-        $messages = array_map(function (ExpoMessage $message) {
-            $array = $message->toArray();
+        $messages = [];
 
-            // use default recipients if message has none of its own
-            if (empty($array['to'])) {
-                $array['to'] = $this->recipients;
+        /**
+         * When response ticket has DeviceNotRegistered it has no indication which push token produced this error,
+         * however it is known that the order of messages and response tickets are the same.
+         * So the only way to keep track of invalid tokens is by their indexes.
+         * For this to work we need to flatten messages' recipients, e.g.
+         * {
+         *     'to' => ['token1', 'token2'],
+         *     'body' => 'Message body',
+         * }
+         * would turn into
+         * [
+         *     {
+         *         'to' => 'token1',
+         *         'body' => 'Message body',
+         *     },
+         *     {
+         *         'to' => 'token2',
+         *         'body' => 'Message body',
+         *     },
+         * ]
+         */
+        foreach ($this->messages as $message) {
+            $message = $message->toArray();
+            foreach (Utils::arrayWrap($message['to']) as $token) {
+                $messages[] = array_merge($message, ['to' => $token]);
             }
-
-            return $array;
-        }, $this->messages);
+        }
 
         $this->reset();
 
@@ -199,7 +237,26 @@ class Expo
         // }
         // return $responses;
 
-        return $this->client->sendPushNotifications($messages);
+        $response = $this->client->sendPushNotifications($messages);
+
+        if (self::hasMacro('deviceNotRegistered') || self::hasMacro('devicesNotRegistered')) {
+            $notRegisteredTokens = [];
+
+            foreach ($response->getData() as $index => $ticket) {
+                if (($ticket['details']['error'] ?? '') == 'DeviceNotRegistered')
+                    $notRegisteredTokens[] = $messages[$index]['to'];
+            }
+
+            if (self::hasMacro('devicesNotRegistered')) {
+                $this->devicesNotRegistered($notRegisteredTokens);
+            } else if (self::hasMacro('deviceNotRegistered')) {
+                foreach ($notRegisteredTokens as $token) {
+                    $this->deviceNotRegistered($token);
+                }
+            }
+        }
+
+        return $response;
     }
 
     /**
