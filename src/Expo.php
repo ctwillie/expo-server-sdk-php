@@ -163,11 +163,18 @@ class Expo
     /**
      * Sets the messages to send
      *
-     * @param ExpoMessage[]|ExpoMessage $message
+     * @param ExpoMessage[]|ExpoMessage|array $message
      */
     public function send($message): self
     {
-        $this->messages = Utils::arrayWrap($message);
+        $messages = Utils::arrayWrap($message);
+
+        foreach ($messages as $index => $message) {
+            if (!($message instanceof ExpoMessage))
+                $messages[$index] = new ExpoMessage($message);
+        }
+
+        $this->messages = $messages;
 
         return $this;
     }
