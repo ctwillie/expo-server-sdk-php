@@ -234,6 +234,22 @@ class ExpoMessage
     }
 
     /**
+     * Sets sound to specific value
+     *
+     * @see sound
+     * @see playSound()
+     *
+     * @param  string|null  $sound
+     *
+     * @return $this
+     */
+    public function setSound(string $sound = null): self {
+        $this->sound = $sound;
+
+        return $this;
+    }
+
+    /**
      * Set the number to display in the badge on the app icon
      *
      * @see badge
