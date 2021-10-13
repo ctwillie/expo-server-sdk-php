@@ -160,28 +160,7 @@ class Expo
      */
     public function to($recipients = null): self
     {
-        $tokens = null;
-
-        if (is_array($recipients) && count($recipients) > 0) {
-            $tokens = $recipients;
-        } elseif (is_string($recipients)) {
-            $tokens = [$recipients];
-        } else {
-            throw new InvalidTokensException(sprintf(
-                'Tokens must be a string or non empty array, %s given.',
-                gettype($tokens)
-            ));
-        }
-
-        $tokens = array_filter($tokens, function ($token) {
-            return Utils::isExpoPushToken($token);
-        });
-
-        if (count($tokens) === 0) {
-            throw new ExpoException('No valid expo tokens provided.');
-        }
-
-        $this->recipients = $tokens;
+        $this->recipients = Utils::validateTokens($recipients);
 
         return $this;
     }

@@ -2,6 +2,9 @@
 
 namespace ExpoSDK;
 
+use ExpoSDK\Exceptions\ExpoException;
+use ExpoSDK\Exceptions\InvalidTokensException;
+
 class Utils
 {
     /**
@@ -47,5 +50,46 @@ class Utils
     {
         return $needle !== '' &&
             substr($haystack, -strlen($needle)) === (string) $needle;
+    }
+
+    /**
+     * Wrap data in array if data is not an array
+     *
+     * @param array|mixed $data
+     *
+     * @return array
+     */
+    public static function arrayWrap($data): array
+    {
+        return is_array($data) ? $data : [$data];
+    }
+
+    /**
+     * Validates and filters tokens for later use
+     *
+     * @throws \ExpoSDK\Exceptions\ExpoException
+     * @throws \ExpoSDK\Exceptions\InvalidTokensException
+     *
+     * @param string[]|string $tokens
+     *
+     * @return string[]
+     */
+    public static function validateTokens($tokens): array {
+        if (!is_array($tokens) && !is_string($tokens)) {
+            throw new InvalidTokensException(sprintf(
+                'Tokens must be a string or non empty array, %s given.',
+                gettype($tokens)
+            ));
+        }
+
+        $tokens = array_filter(Utils::arrayWrap($tokens), function ($token) {
+            return Utils::isExpoPushToken($token);
+        });
+
+        if (count($tokens) === 0) {
+            throw new ExpoException('No valid expo tokens provided.');
+        }
+
+        return $tokens;
     }
 }

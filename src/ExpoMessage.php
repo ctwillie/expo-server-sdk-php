@@ -12,6 +12,13 @@ use ExpoSDK\Exceptions\ExpoMessageException;
 class ExpoMessage
 {
     /**
+     * An Expo push token or an array of Expo push tokens specifying the recipient(s) of this message.
+     *
+     * @var string[]|null
+     */
+    private $to = null;
+
+    /**
      * A JSON object delivered to your app.
      * It may be up to about 4KiB; the total notification payload sent to Apple and Google must be at most 4KiB
      * or else you will get a "Message Too Big" error.
@@ -122,6 +129,24 @@ class ExpoMessage
      * @var bool
      */
     private $mutableContent = false;
+
+    /**
+     * Set recipients of the message
+     *
+     * @see to
+     *
+     * @throws \ExpoSDK\Exceptions\ExpoException
+     * @throws \ExpoSDK\Exceptions\InvalidTokensException
+     *
+     * @param  string[]|string  $tokens
+     *
+     * @return $this
+     */
+    public function setTo($tokens): self {
+        $this->to = Utils::validateTokens($tokens);
+
+        return $this;
+    }
 
     /**
      * Sets the data for the message
