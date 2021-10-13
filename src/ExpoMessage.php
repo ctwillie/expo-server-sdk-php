@@ -39,9 +39,17 @@ class ExpoMessage
      * Time to Live: the number of seconds for which the message may be kept around for redelivery if it hasn't been delivered yet.
      * Defaults to null in order to use the respective defaults of each provider (0 for iOS/APNs and 2419200 (4 weeks) for Android/FCM).
      *
-     * @var number|null
+     * @var int|null
      */
     private $ttl = null;
+
+    /**
+     * Timestamp since the UNIX epoch specifying when the message expires.
+     * Same effect as ttl (ttl takes precedence over expiration).
+     *
+     * @var int|null
+     */
+    private $expiration = null;
 
     /**
      * The delivery priority of the message.
@@ -178,6 +186,21 @@ class ExpoMessage
      */
     public function setTtl(int $ttl = null): self {
         $this->ttl = $ttl;
+
+        return $this;
+    }
+
+    /**
+     * Sets expiration time of the message
+     *
+     * @see expiration
+     *
+     * @param  int|null  $expiration
+     *
+     * @return $this
+     */
+    public function setExpiration(int $expiration = null): self {
+        $this->expiration = $expiration;
 
         return $this;
     }
