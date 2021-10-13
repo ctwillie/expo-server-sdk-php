@@ -18,14 +18,14 @@ class Expo
     private $client;
 
     /**
-     * The message to send
+     * Messages to send
      *
-     * @var ExpoMessage
+     * @var ExpoMessage[]
      */
-    private $message = null;
+    private $messages = [];
 
     /**
-     * The tokens to send the message to
+     * Default tokens to send the message to (if they don't have their own respective recipients)
      *
      * @var array
      */
@@ -132,7 +132,7 @@ class Expo
     }
 
     /**
-     * Get the message recipients
+     * Get default recipients
      *
      * @return array|null
      */
@@ -142,17 +142,19 @@ class Expo
     }
 
     /**
-     * Sets the message to send
+     * Sets the messages to send
+     *
+     * @param ExpoMessage[]|ExpoMessage $message
      */
-    public function send(ExpoMessage $message): self
+    public function send($message): self
     {
-        $this->message = $message;
+        $this->messages = Utils::arrayWrap($message);
 
         return $this;
     }
 
     /**
-     * Sets the recipients to send the message to
+     * Sets default recipients
      *
      * @param string|array $recipients
      * @throws InvalidTokensException
@@ -166,21 +168,36 @@ class Expo
     }
 
     /**
-     * Send the message to the expo server
+     * Send the messages to the expo server
      *
      * @throws ExpoException
      */
     public function push(): ExpoResponse
     {
-        if (is_null($this->message) || is_null($this->recipients)) {
-            throw new ExpoException('You must have a message and recipients to push');
+        if (empty($this->messages)) {
+            throw new ExpoException('You must have messages to push');
         }
 
-        $messages = array_map(function ($recipient) {
-            return $this->message->toArray() + ['to' => $recipient];
-        }, $this->recipients);
+        $messages = array_map(function (ExpoMessage $message) {
+            $array = $message->toArray();
+
+            // use default recipients if message has none of its own
+            if (empty($array['to'])) {
+                $array['to'] = $this->recipients;
+            }
+
+            return $array;
+        }, $this->messages);
 
         $this->reset();
+
+        // todo chunking when messages count > 100, accumulate client responses somehow
+        // $responses = [];
+        // $chunks = array_chunk($messages, 100);
+        // foreach ($chunks as $chunk) {
+        //     $responses[] = $this->client->sendPushNotifications($chunk);
+        // }
+        // return $responses;
 
         return $this->client->sendPushNotifications($messages);
     }
@@ -214,7 +231,7 @@ class Expo
      */
     private function reset(): void
     {
-        $this->message = null;
+        $this->messages = [];
         $this->recipients = null;
     }
 }
