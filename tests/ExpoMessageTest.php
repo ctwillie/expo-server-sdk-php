@@ -22,6 +22,8 @@ class ExpoMessageTest extends TestCase
 
         $message->setData(['foo' => 'bar'])
             ->setTtl(10)
+            ->setTo(['ExponentPushToken[valid-token]', 'invalid-token]'])
+            ->setExpiration(10)
             ->setPriority('default')
             ->setSubtitle('Subtitle')
             ->setBadge(0)
@@ -31,8 +33,10 @@ class ExpoMessageTest extends TestCase
 
         $this->assertSame(
             [
-                "data" => '{"foo":"bar"}',
+                "to" => ['ExponentPushToken[valid-token]'],
+                "data" => ['foo' => 'bar'],
                 "ttl" => 10,
+                "expiration" => 10,
                 "priority" => "default",
                 "subtitle" => "Subtitle",
                 "badge" => 0,
@@ -57,7 +61,8 @@ class ExpoMessageTest extends TestCase
     }
 
     /** @test */
-    public function throws_exception_when_data_cannot_be_json_encoded()
+    // json encoding removed since Expo encodes and decodes on both ends already
+    /*public function throws_exception_when_data_cannot_be_json_encoded()
     {
         $message = new ExpoMessage();
 
@@ -71,5 +76,5 @@ class ExpoMessageTest extends TestCase
         $message->setData(
             compact('data')
         );
-    }
+    }*/
 }

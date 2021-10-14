@@ -217,11 +217,11 @@ class ExpoTest extends TestCase
     }
 
     /** @test */
-    public function throws_exception_when_push_called_with_empty_message_or_recipients()
+    public function throws_exception_when_push_called_with_no_messages()
     {
         $expo = new Expo();
 
-        $this->expectExceptionMessage('You must have a message and recipients to push');
+        $this->expectExceptionMessage('You must have messages to push');
 
         $expo->push();
     }
