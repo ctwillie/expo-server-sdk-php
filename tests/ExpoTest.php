@@ -225,4 +225,46 @@ class ExpoTest extends TestCase
 
         $expo->push();
     }
+
+    /** @test */
+    public function can_create_messages_from_array() {
+        $messages = [
+            [
+                "to" => ['ExponentPushToken[valid-token]'],
+                "data" => ['foo' => 'bar'],
+                "ttl" => 10,
+                "expiration" => 10,
+                "priority" => "default",
+                "subtitle" => "Subtitle",
+                "badge" => 0,
+                "channelId" => "default",
+                "categoryId" => "category-id",
+                "mutableContent" => true,
+            ],
+            (new ExpoMessage)->setData(['foo' => 'bar'])
+                ->setTtl(10)
+                ->setTo(['ExponentPushToken[valid-token]', 'invalid-token]'])
+                ->setExpiration(10)
+                ->setPriority('default')
+                ->setSubtitle('Subtitle')
+                ->setBadge(0)
+                ->setChannelId('default')
+                ->setCategoryId('category-id')
+                ->setMutableContent(true),
+        ];
+
+        $expoMessages = (new Expo)->send($messages)->getMessages();
+
+        foreach ($expoMessages as $message) {
+            if (!($message instanceof ExpoMessage))
+                $this->throwException(new \TypeError('Could not create message from array of data'));
+        }
+
+        $messages[1] = $messages[1]->toArray();
+        $expectedMessages = array_map(function ($message) {
+            return $message->toArray();
+        }, $expoMessages);
+
+        $this->assertEquals($expectedMessages, $messages);
+    }
 }

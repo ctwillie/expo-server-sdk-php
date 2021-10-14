@@ -161,6 +161,16 @@ class Expo
     }
 
     /**
+     * Get messages
+     *
+     * @return array|null
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
      * Sets the messages to send
      *
      * @param ExpoMessage[]|ExpoMessage|array $message

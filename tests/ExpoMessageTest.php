@@ -61,6 +61,29 @@ class ExpoMessageTest extends TestCase
     }
 
     /** @test */
+    public function can_create_message_from_array() {
+        $message = (new ExpoMessage([
+            'title' => 'test title',
+            'body' => 'test body',
+            'data' => ['test' => 'data'],
+            'to' => ['ExponentPushToken[valid-token]', 'invalid-token]'],
+        ]))->toArray();
+        $expected = [
+            'mutableContent' => false,
+            'priority' => 'default',
+            'title' => 'test title',
+            'body' => 'test body',
+            'data' => ['test' => 'data'],
+            'to' => ['ExponentPushToken[valid-token]'],
+        ];
+
+        asort($expected);
+        asort($message);
+
+        $this->assertEquals($expected, $message);
+    }
+
+    /** @test */
     // json encoding removed since Expo encodes and decodes on both ends already
     /*public function throws_exception_when_data_cannot_be_json_encoded()
     {
