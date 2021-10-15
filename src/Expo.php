@@ -172,6 +172,12 @@ class Expo
     {
         $messages = Utils::arrayWrap($message);
 
+        if (Utils::isAssoc($messages)) {
+            throw new ExpoException(
+                'You can only send an ExpoMessage instance or an array of messages'
+            );
+        }
+
         foreach ($messages as $index => $message) {
             if (! $message instanceof ExpoMessage) {
                 $messages[$index] = new ExpoMessage($message);
@@ -277,7 +283,7 @@ class Expo
     /**
      * Resets the instance data
      */
-    private function reset(): void
+    public function reset(): void
     {
         $this->messages = [];
         $this->recipients = null;
