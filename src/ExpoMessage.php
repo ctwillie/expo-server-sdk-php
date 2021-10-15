@@ -130,11 +130,10 @@ class ExpoMessage
      */
     private $mutableContent = false;
 
-    public function __construct(array $args = []) {
-        foreach ($args as $key => $value) {
+    public function __construct(array $attributes = []) {
+        foreach ($attributes as $key => $value) {
             $method = 'set' . ucfirst($key);
 
-            // all properties without setters will be skipped
             if (method_exists($this, $method)) {
                 $this->{$method}($value);
             }
@@ -171,9 +170,8 @@ class ExpoMessage
      * @return $this
      */
     public function setData($data = null): self {
-        // allow null, objects and associative arrays
-        if ($data != null && !is_object($data) && !Utils::isAssoc($data)) {
-            throw new ExpoMessageException('Message data must be either associative array, object or null.');
+        if ($data !== null && !is_object($data) && !Utils::isAssoc($data)) {
+            throw new ExpoMessageException('Message data must be either an associative array, object or null.');
         }
 
         $this->data = $data;
@@ -293,7 +291,7 @@ class ExpoMessage
     }
 
     /**
-     * Sets sound to specific value
+     * Sets the sound to play when the notification is recieved
      *
      * @see sound
      * @see playSound()

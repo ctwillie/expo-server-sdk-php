@@ -55,7 +55,7 @@ class Utils
     /**
      * Wrap data in array if data is not an array
      *
-     * @param array|mixed $data
+     * @param mixed $data
      *
      * @return array
      */

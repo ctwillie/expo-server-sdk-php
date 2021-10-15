@@ -82,22 +82,4 @@ class ExpoMessageTest extends TestCase
 
         $this->assertEquals($expected, $message);
     }
-
-    /** @test */
-    // json encoding removed since Expo encodes and decodes on both ends already
-    /*public function throws_exception_when_data_cannot_be_json_encoded()
-    {
-        $message = new ExpoMessage();
-
-        // encoded in ISO-8859-1
-        $data = "\xE1\xE9\xF3\xFA";
-
-        $this->expectExceptionMessage(
-            'Data could not be json encoded.'
-        );
-
-        $message->setData(
-            compact('data')
-        );
-    }*/
 }

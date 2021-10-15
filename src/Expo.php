@@ -2,6 +2,7 @@
 
 namespace ExpoSDK;
 
+use Closure;
 use ExpoSDK\Exceptions\ExpoException;
 use ExpoSDK\Exceptions\InvalidTokensException;
 use ExpoSDK\Traits\Macroable;
@@ -42,18 +43,10 @@ class Expo
     }
 
     /**
-     * Registers macro for handling each token with DeviceNotRegistered error separately
-     * @param $callback
-     */
-    public static function addDeviceNotRegisteredHandler($callback) {
-        self::macro('deviceNotRegistered', $callback);
-    }
-
-    /**
      * Registers macro for handling all tokens with DeviceNotRegistered errors
-     * @param $callback
      */
-    public static function addDevicesNotRegisteredHandler($callback) {
+    public static function addDevicesNotRegisteredHandler(Closure $callback): void
+    {
         self::macro('devicesNotRegistered', $callback);
     }
 
@@ -180,8 +173,9 @@ class Expo
         $messages = Utils::arrayWrap($message);
 
         foreach ($messages as $index => $message) {
-            if (!($message instanceof ExpoMessage))
+            if (! $message instanceof ExpoMessage) {
                 $messages[$index] = new ExpoMessage($message);
+            }
         }
 
         $this->messages = $messages;
@@ -190,7 +184,7 @@ class Expo
     }
 
     /**
-     * Sets default recipients
+     * Sets the default recipients
      *
      * @param string|array $recipients
      * @throws InvalidTokensException
@@ -211,65 +205,45 @@ class Expo
     public function push(): ExpoResponse
     {
         if (empty($this->messages)) {
-            throw new ExpoException('You must have messages to push');
+            throw new ExpoException('You must have at least one message to push');
         }
 
         $messages = [];
 
         /**
-         * When response ticket has DeviceNotRegistered it has no indication which push token produced this error,
-         * however it is known that the order of messages and response tickets are the same.
-         * So the only way to keep track of invalid tokens is by their indexes.
-         * For this to work we need to flatten messages' recipients, e.g.
-         * {
-         *     'to' => ['token1', 'token2'],
-         *     'body' => 'Message body',
-         * }
-         * would turn into
-         * [
-         *     {
-         *         'to' => 'token1',
-         *         'body' => 'Message body',
-         *     },
-         *     {
-         *         'to' => 'token2',
-         *         'body' => 'Message body',
-         *     },
-         * ]
+         * When a response ticket has DeviceNotRegistered it has no indication which push token produced this error.
+         * However it is known the order of messages and response tickets are the same.
+         * So the only way to keep track of invalid tokens is by their indices.
+         * For this to work we need to flatten messages' recipients.
          */
         foreach ($this->messages as $message) {
             $message = $message->toArray();
-            foreach (Utils::arrayWrap($message['to'] ?? $this->recipients) as $token) {
+            $tokens = $message['to'] ?? $this->recipients;
+
+            if (empty($tokens)) {
+                throw new ExpoException('A message must have at least one recipient to send');
+            }
+
+            foreach (Utils::arrayWrap($tokens) as $token) {
                 $messages[] = array_merge($message, ['to' => $token]);
             }
         }
 
         $this->reset();
 
-        // todo chunking when messages count > 100, accumulate client responses somehow
-        // $responses = [];
-        // $chunks = array_chunk($messages, 100);
-        // foreach ($chunks as $chunk) {
-        //     $responses[] = $this->client->sendPushNotifications($chunk);
-        // }
-        // return $responses;
-
         $response = $this->client->sendPushNotifications($messages);
 
-        if (self::hasMacro('deviceNotRegistered') || self::hasMacro('devicesNotRegistered')) {
+        if (self::hasMacro('devicesNotRegistered')) {
             $notRegisteredTokens = [];
 
             foreach ($response->getData() as $index => $ticket) {
-                if (($ticket['details']['error'] ?? '') == 'DeviceNotRegistered')
+                if (($ticket['details']['error'] ?? '') === 'DeviceNotRegistered') {
                     $notRegisteredTokens[] = $messages[$index]['to'];
+                }
             }
 
-            if (self::hasMacro('devicesNotRegistered')) {
+            if (! empty($notRegisteredTokens)) {
                 $this->devicesNotRegistered($notRegisteredTokens);
-            } else if (self::hasMacro('deviceNotRegistered')) {
-                foreach ($notRegisteredTokens as $token) {
-                    $this->deviceNotRegistered($token);
-                }
             }
         }
 
