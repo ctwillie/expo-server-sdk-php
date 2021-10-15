@@ -12,6 +12,7 @@ If you have any problems with the code in this repository, feel free to [open an
 -   [Use Cases](#use-cases)
 -   [Composing a Message](#composing-a-message)
 -   [Sending a Message](#sending-a-push-notification)
+-   [Handling DeviceNotRegistered tokens](#handling-devicenotregistered-tokens)
 -   [Channel Subscriptions](#channel-subscriptions)
 -   [Expo Responses](#expo-responses)
 -   [Retrieving Push Receipts](#retrieving-push-receipts)
@@ -41,7 +42,7 @@ composer require ctwillie/expo-server-sdk-php
 
 This package was written with two main use cases in mind.
 
-1. Sending a push notification message to one or more recipients, then your done! The most obvious use case.
+1. Sending push notification messages to one or more recipients, then you're done! The most obvious use case.
 2. And channel subscriptions, used to subscribe one or more tokens to a channel, then send push notifications to all tokens subscribed to that channel. Subscriptions are persisted until a token unsubscribes from a channel. Maybe unsubscribing upon the end users request.
 
 Keep this in mind as you decide which is the best use case for your back end.
@@ -53,9 +54,16 @@ Compose a push notification message to send using options from the [Expo docs](h
 ```php
 use ExpoSDK\ExpoMessage;
 
-$message = (new ExpoMessage())
-    ->setTitle('Message Title')
-    ->setBody('The notification message body')
+/**
+ * Create messages manually or 
+ */
+$message = (new ExpoMessage([
+    'title' => 'initial title',
+    'body' => 'initial body',
+    // other Expo message properties
+]))
+    ->setTitle('This title overrides initial title')
+    ->setBody('This notification body overrides initial body')
     ->setData(['id' => 1])
     ->setChannelId('default')
     ->setBadge(0)
@@ -68,18 +76,58 @@ Compose a message then send to one or more recipients.
 
 ```php
 use ExpoSDK\Expo;
+use ExpoSDK\ExpoMessage;
 
-$expo = new Expo();
+/**
+ * Composed messages, see above
+ * Can be an array of arrays, ExpoMessage instances will be made internally
+ */
+$messages = [
+    [
+        'title' => 'Test notification',
+        'to' => 'ExponentPushToken[xxxx-xxxx-xxxx]',    
+    ],
+    new ExpoMessage([
+        'title' => 'Notification for default recipients',
+        'body' => 'Because "to" property is not defined',
+    ]),
+];
 
-// composed message, see above
-$message;
-
-$recipients = [
+/**
+ * These recipients are used when ExpoMessage has none 
+ */
+$defaultRecipients = [
     'ExponentPushToken[xxxx-xxxx-xxxx]',
     'ExponentPushToken[yyyy-yyyy-yyyy]'
 ];
 
-$expo->send($message)->to($recipients)->push();
+(new Expo)->send($messages)->to($defaultRecipients)->push();
+```
+
+## Handling DeviceNotRegistered tokens
+
+Expo has two macros for handling tokens that have DeviceNotRegistered error in Expo response. You can register callbacks for them somewhere in the beginning of your request lifecycle and they will be called for all invalid tokens.
+
+You only need to register them once as they are applied for all future Expo instances.
+
+```php
+use ExpoSDK\Expo;
+
+Expo::addDevicesNotRegisteredHandler(function ($tokens) {
+    // this callback is called once and receives array of invalid tokens
+});
+Expo::addDeviceNotRegisteredHandler(function ($token) {
+    // this callback is called for each token separately and only if previous macro is not registered
+});
+
+$expo1 = new Expo();
+$expo1->send(...)->push(); // will call your callbacks
+
+$expo2 = new Expo();
+$expo2->send(...)->push(); // also will call your callbacks
+
+$expo3 = new Expo();
+$expo3->send(...)->push(); // also will call your callbacks
 ```
 
 ## Channel subscriptions:
