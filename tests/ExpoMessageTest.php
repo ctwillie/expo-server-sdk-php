@@ -22,6 +22,8 @@ class ExpoMessageTest extends TestCase
 
         $message->setData(['foo' => 'bar'])
             ->setTtl(10)
+            ->setTo(['ExponentPushToken[valid-token]', 'invalid-token]'])
+            ->setExpiration(10)
             ->setPriority('default')
             ->setSubtitle('Subtitle')
             ->setBadge(0)
@@ -31,8 +33,10 @@ class ExpoMessageTest extends TestCase
 
         $this->assertSame(
             [
-                "data" => '{"foo":"bar"}',
+                "to" => ['ExponentPushToken[valid-token]'],
+                "data" => ['foo' => 'bar'],
                 "ttl" => 10,
+                "expiration" => 10,
                 "priority" => "default",
                 "subtitle" => "Subtitle",
                 "badge" => 0,
@@ -57,19 +61,25 @@ class ExpoMessageTest extends TestCase
     }
 
     /** @test */
-    public function throws_exception_when_data_cannot_be_json_encoded()
-    {
-        $message = new ExpoMessage();
+    public function can_create_message_from_array() {
+        $message = (new ExpoMessage([
+            'title' => 'test title',
+            'body' => 'test body',
+            'data' => ['test' => 'data'],
+            'to' => ['ExponentPushToken[valid-token]', 'invalid-token]'],
+        ]))->toArray();
+        $expected = [
+            'mutableContent' => false,
+            'priority' => 'default',
+            'title' => 'test title',
+            'body' => 'test body',
+            'data' => ['test' => 'data'],
+            'to' => ['ExponentPushToken[valid-token]'],
+        ];
 
-        // encoded in ISO-8859-1
-        $data = "\xE1\xE9\xF3\xFA";
+        asort($expected);
+        asort($message);
 
-        $this->expectExceptionMessage(
-            'Data could not be json encoded.'
-        );
-
-        $message->setData(
-            compact('data')
-        );
+        $this->assertEquals($expected, $message);
     }
 }

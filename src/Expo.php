@@ -2,11 +2,15 @@
 
 namespace ExpoSDK;
 
+use Closure;
 use ExpoSDK\Exceptions\ExpoException;
 use ExpoSDK\Exceptions\InvalidTokensException;
+use ExpoSDK\Traits\Macroable;
 
 class Expo
 {
+    use Macroable;
+
     /**
      * @var DriverManager
      */
@@ -18,14 +22,14 @@ class Expo
     private $client;
 
     /**
-     * The message to send
+     * Messages to send
      *
-     * @var ExpoMessage
+     * @var ExpoMessage[]
      */
-    private $message = null;
+    private $messages = [];
 
     /**
-     * The tokens to send the message to
+     * Default tokens to send the message to (if they don't have their own respective recipients)
      *
      * @var array
      */
@@ -36,6 +40,14 @@ class Expo
         $this->manager = $manager;
 
         $this->client = new ExpoClient();
+    }
+
+    /**
+     * Registers macro for handling all tokens with DeviceNotRegistered errors
+     */
+    public static function addDevicesNotRegisteredHandler(Closure $callback): void
+    {
+        self::macro('devicesNotRegistered', $callback);
     }
 
     /**
@@ -132,7 +144,7 @@ class Expo
     }
 
     /**
-     * Get the message recipients
+     * Get default recipients
      *
      * @return array|null
      */
@@ -142,17 +154,43 @@ class Expo
     }
 
     /**
-     * Sets the message to send
+     * Get messages
+     *
+     * @return array|null
      */
-    public function send(ExpoMessage $message): self
+    public function getMessages()
     {
-        $this->message = $message;
+        return $this->messages;
+    }
+
+    /**
+     * Sets the messages to send
+     *
+     * @param ExpoMessage[]|ExpoMessage|array $message
+     */
+    public function send($message): self
+    {
+        $messages = Utils::arrayWrap($message);
+
+        if (Utils::isAssoc($messages)) {
+            throw new ExpoException(
+                'You can only send an ExpoMessage instance or an array of messages'
+            );
+        }
+
+        foreach ($messages as $index => $message) {
+            if (! $message instanceof ExpoMessage) {
+                $messages[$index] = new ExpoMessage($message);
+            }
+        }
+
+        $this->messages = $messages;
 
         return $this;
     }
 
     /**
-     * Sets the recipients to send the message to
+     * Sets the default recipients
      *
      * @param string|array $recipients
      * @throws InvalidTokensException
@@ -160,50 +198,64 @@ class Expo
      */
     public function to($recipients = null): self
     {
-        $tokens = null;
-
-        if (is_array($recipients) && count($recipients) > 0) {
-            $tokens = $recipients;
-        } elseif (is_string($recipients)) {
-            $tokens = [$recipients];
-        } else {
-            throw new InvalidTokensException(sprintf(
-                'Tokens must be a string or non empty array, %s given.',
-                gettype($tokens)
-            ));
-        }
-
-        $tokens = array_filter($tokens, function ($token) {
-            return Utils::isExpoPushToken($token);
-        });
-
-        if (count($tokens) === 0) {
-            throw new ExpoException('No valid expo tokens provided.');
-        }
-
-        $this->recipients = $tokens;
+        $this->recipients = Utils::validateTokens($recipients);
 
         return $this;
     }
 
     /**
-     * Send the message to the expo server
+     * Send the messages to the expo server
      *
      * @throws ExpoException
      */
     public function push(): ExpoResponse
     {
-        if (is_null($this->message) || is_null($this->recipients)) {
-            throw new ExpoException('You must have a message and recipients to push');
+        if (empty($this->messages)) {
+            throw new ExpoException('You must have at least one message to push');
         }
 
-        $messages = array_map(function ($recipient) {
-            return $this->message->toArray() + ['to' => $recipient];
-        }, $this->recipients);
+        $messages = [];
+
+        /**
+         * When a response ticket has DeviceNotRegistered it has no indication which push token produced this error.
+         * However it is known the order of messages and response tickets are the same.
+         * So the only way to keep track of invalid tokens is by their indices.
+         * For this to work we need to flatten messages' recipients.
+         */
+        foreach ($this->messages as $message) {
+            $message = $message->toArray();
+            $tokens = $message['to'] ?? $this->recipients;
+
+            if (empty($tokens)) {
+                throw new ExpoException('A message must have at least one recipient to send');
+            }
+
+            foreach (Utils::arrayWrap($tokens) as $token) {
+                $messages[] = array_merge($message, ['to' => $token]);
+            }
+        }
 
         $this->reset();
 
-        return $this->client->sendPushNotifications($messages);
+        $response = $this->client->sendPushNotifications($messages);
+
+        if (self::hasMacro('devicesNotRegistered')) {
+            $notRegisteredTokens = [];
+
+            foreach ($response->getData() as $index => $ticket) {
+                if (($ticket['details']['error'] ?? '') === 'DeviceNotRegistered') {
+                    $notRegisteredTokens[] = $messages[$index]['to'];
+                }
+            }
+
+            if (! empty($notRegisteredTokens)) {
+                $this->devicesNotRegistered(
+                    array_unique($notRegisteredTokens)
+                );
+            }
+        }
+
+        return $response;
     }
 
     /**
@@ -233,9 +285,9 @@ class Expo
     /**
      * Resets the instance data
      */
-    private function reset(): void
+    public function reset(): void
     {
-        $this->message = null;
+        $this->messages = [];
         $this->recipients = null;
     }
 }

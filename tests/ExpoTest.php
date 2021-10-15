@@ -198,31 +198,154 @@ class ExpoTest extends TestCase
     }
 
     /** @test */
-    public function throws_exception_interacting_with_subscriptions_without_driver()
+    public function throws_exception_checking_subscriptions_without_driver()
     {
         $expo = new Expo();
         $message = 'You must provide a driver to interact with subscriptions.';
-
-        $this->expectExceptionMessage($message);
-        $expo->subscribe('default', []);
-
-        $this->expectExceptionMessage($message);
-        $expo->unsubscribe('default', []);
-
-        $this->expectExceptionMessage($message);
-        $expo->getSubscriptions('default', []);
 
         $this->expectExceptionMessage($message);
         $expo->hasSubscriptions('default', []);
     }
 
     /** @test */
-    public function throws_exception_when_push_called_with_empty_message_or_recipients()
+    public function throws_exception_retrieving_subscriptions_without_driver()
+    {
+        $expo = new Expo();
+        $message = 'You must provide a driver to interact with subscriptions.';
+
+        $this->expectExceptionMessage($message);
+        $expo->getSubscriptions('default', []);
+    }
+
+    /** @test */
+    public function throws_exception_subscribing_token_without_driver()
+    {
+        $expo = new Expo();
+        $message = 'You must provide a driver to interact with subscriptions.';
+
+        $this->expectExceptionMessage($message);
+        $expo->subscribe('default', []);
+    }
+
+    /** @test */
+    public function throws_exception_unsubscribing_token_without_driver()
+    {
+        $expo = new Expo();
+        $message = 'You must provide a driver to interact with subscriptions.';
+
+        $this->expectExceptionMessage($message);
+        $expo->unsubscribe('default', []);
+    }
+
+    /** @test */
+    public function throws_exception_when_push_called_with_no_messages()
     {
         $expo = new Expo();
 
-        $this->expectExceptionMessage('You must have a message and recipients to push');
+        $this->expectExceptionMessage('You must have at least one message to push');
 
         $expo->push();
+    }
+
+    /** @test */
+    public function converts_arrays_to_expo_messages() {
+        $messages = [
+            [
+                "to" => ['ExponentPushToken[valid-token]'],
+                "data" => ['foo' => 'bar'],
+                "ttl" => 10,
+                "expiration" => 10,
+                "priority" => "default",
+                "subtitle" => "Subtitle",
+                "badge" => 0,
+                "channelId" => "default",
+                "categoryId" => "category-id",
+                "mutableContent" => true,
+            ],
+            (new ExpoMessage)->setData(['foo' => 'bar'])
+                ->setTtl(10)
+                ->setTo(['ExponentPushToken[valid-token]', 'invalid-token]'])
+                ->setExpiration(10)
+                ->setPriority('default')
+                ->setSubtitle('Subtitle')
+                ->setBadge(0)
+                ->setChannelId('default')
+                ->setCategoryId('category-id')
+                ->setMutableContent(true),
+        ];
+
+        $expoMessages = (new Expo)->send($messages)->getMessages();
+
+        foreach ($expoMessages as $message) {
+            if (! $message instanceof ExpoMessage) {
+                $this->throwException(new \TypeError('Could not create message from array of data'));
+            }
+        }
+
+        $messages[1] = $messages[1]->toArray();
+
+        $expectedMessages = array_map(function ($message) {
+            return $message->toArray();
+        }, $expoMessages);
+
+        $this->assertEquals($expectedMessages, $messages);
+    }
+
+    /** @test */
+    public function throws_exception_if_any_message_does_not_have_recpients()
+    {
+        $message1 = (new ExpoMessage)
+            ->setTitle('Title')
+            ->setBody('Message body')
+            ->setData(['foo' => 'bar'])
+            ->setChannelId('default');
+
+        $message2 = [
+            'title' => 'Title',
+            'body' => 'Message body',
+            'to' => 'ExponentPushToken[xxxxxx]',
+        ];
+
+        $this->expectExceptionMessage('A message must have at least one recipient to send');
+
+        (new Expo())->send([$message1, $message2])->push();
+    }
+
+    /** @test */
+    public function throws_exception_passing_assoc_array_to_send_method()
+    {
+        $this->expectExceptionMessage(
+            'You can only send an ExpoMessage instance or an array of messages'
+        );
+
+        (new Expo())->send(['title' => 'Title']);
+    }
+
+    /** @test */
+    public function can_register_callback_for_unregistered_tokens()
+    {
+        $expo = new Expo();
+
+        $expo::addDevicesNotRegisteredHandler(function ($tokens) {
+            //
+        });
+
+        $this->assertTrue($expo::hasMacro('devicesNotRegistered'));
+    }
+
+    /** @test */
+    public function can_reset_the_instance_message_and_recipients()
+    {
+        $token = 'ExpoPushToken[xxxxxx]';
+        $message = new ExpoMessage(['title' => 'Title']);
+        $expo = (new Expo())->send($message)->to($token);
+
+        $this->assertNotEmpty($expo->getRecipients());
+        $this->assertNotEmpty($expo->getMessages());
+
+        $expo->reset();
+
+        $this->assertEmpty($expo->getRecipients());
+        $this->assertEmpty($expo->getMessages());
     }
 }
