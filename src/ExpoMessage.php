@@ -130,7 +130,8 @@ class ExpoMessage
      */
     private $mutableContent = false;
 
-    public function __construct(array $attributes = []) {
+    public function __construct(array $attributes = [])
+    {
         foreach ($attributes as $key => $value) {
             $method = 'set' . ucfirst($key);
 
@@ -152,7 +153,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setTo($tokens): self {
+    public function setTo($tokens): self
+    {
         $this->to = Utils::validateTokens($tokens);
 
         return $this;
@@ -169,8 +171,9 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setData($data = null): self {
-        if ($data !== null && !is_object($data) && !Utils::isAssoc($data)) {
+    public function setData($data = null): self
+    {
+        if ($data !== null && ! is_object($data) && ! Utils::isAssoc($data)) {
             throw new ExpoMessageException('Message data must be either an associative array, object or null.');
         }
 
@@ -188,7 +191,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setTitle(string $title = null): self {
+    public function setTitle(string $title = null): self
+    {
         $this->title = $title;
 
         return $this;
@@ -203,7 +207,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setBody(string $body = null): self {
+    public function setBody(string $body = null): self
+    {
         $this->body = $body;
 
         return $this;
@@ -218,7 +223,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setTtl(int $ttl = null): self {
+    public function setTtl(int $ttl = null): self
+    {
         $this->ttl = $ttl;
 
         return $this;
@@ -233,7 +239,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setExpiration(int $expiration = null): self {
+    public function setExpiration(int $expiration = null): self
+    {
         $this->expiration = $expiration;
 
         return $this;
@@ -250,10 +257,11 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setPriority(string $priority = 'default'): self {
+    public function setPriority(string $priority = 'default'): self
+    {
         $priority = strtolower($priority);
 
-        if (!in_array($priority, ['default', 'normal', 'high'])) {
+        if (! in_array($priority, ['default', 'normal', 'high'])) {
             throw new ExpoMessageException('Priority must be default, normal or high.');
         }
 
@@ -271,7 +279,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setSubtitle(string $subtitle = null): self {
+    public function setSubtitle(string $subtitle = null): self
+    {
         $this->subtitle = $subtitle;
 
         return $this;
@@ -284,7 +293,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function playSound(): self {
+    public function playSound(): self
+    {
         $this->sound = 'default';
 
         return $this;
@@ -300,7 +310,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setSound(string $sound = null): self {
+    public function setSound(string $sound = null): self
+    {
         $this->sound = $sound;
 
         return $this;
@@ -315,7 +326,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setBadge(int $badge = null): self {
+    public function setBadge(int $badge = null): self
+    {
         $this->badge = $badge;
 
         return $this;
@@ -330,7 +342,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setChannelId(string $channelId = null): self {
+    public function setChannelId(string $channelId = null): self
+    {
         $this->channelId = $channelId;
 
         return $this;
@@ -345,7 +358,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setCategoryId(string $categoryId = null): self {
+    public function setCategoryId(string $categoryId = null): self
+    {
         $this->categoryId = $categoryId;
 
         return $this;
@@ -360,7 +374,8 @@ class ExpoMessage
      *
      * @return $this
      */
-    public function setMutableContent(bool $mutable): self {
+    public function setMutableContent(bool $mutable): self
+    {
         $this->mutableContent = $mutable;
 
         return $this;
@@ -372,11 +387,12 @@ class ExpoMessage
      *
      * @return array
      */
-    public function toArray(): array {
+    public function toArray(): array
+    {
         $attributes = [];
 
         foreach ($this as $key => $value) {
-            if (!is_null($value)) {
+            if (! is_null($value)) {
                 $attributes[$key] = $value;
             }
         }

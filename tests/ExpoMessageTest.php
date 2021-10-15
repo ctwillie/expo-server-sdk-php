@@ -61,7 +61,8 @@ class ExpoMessageTest extends TestCase
     }
 
     /** @test */
-    public function can_create_message_from_array() {
+    public function can_create_message_from_array()
+    {
         $message = (new ExpoMessage([
             'title' => 'test title',
             'body' => 'test body',

@@ -74,8 +74,9 @@ class Utils
      *
      * @return string[]
      */
-    public static function validateTokens($tokens): array {
-        if (!is_array($tokens) && !is_string($tokens)) {
+    public static function validateTokens($tokens): array
+    {
+        if (! is_array($tokens) && ! is_string($tokens)) {
             throw new InvalidTokensException(sprintf(
                 'Tokens must be a string or non empty array, %s given.',
                 gettype($tokens)

@@ -248,7 +248,8 @@ class ExpoTest extends TestCase
     }
 
     /** @test */
-    public function converts_arrays_to_expo_messages() {
+    public function converts_arrays_to_expo_messages()
+    {
         $messages = [
             [
                 "to" => ['ExponentPushToken[valid-token]'],
@@ -262,7 +263,7 @@ class ExpoTest extends TestCase
                 "categoryId" => "category-id",
                 "mutableContent" => true,
             ],
-            (new ExpoMessage)->setData(['foo' => 'bar'])
+            (new ExpoMessage())->setData(['foo' => 'bar'])
                 ->setTtl(10)
                 ->setTo(['ExponentPushToken[valid-token]', 'invalid-token]'])
                 ->setExpiration(10)
@@ -274,7 +275,7 @@ class ExpoTest extends TestCase
                 ->setMutableContent(true),
         ];
 
-        $expoMessages = (new Expo)->send($messages)->getMessages();
+        $expoMessages = (new Expo())->send($messages)->getMessages();
 
         foreach ($expoMessages as $message) {
             if (! $message instanceof ExpoMessage) {
@@ -294,7 +295,7 @@ class ExpoTest extends TestCase
     /** @test */
     public function throws_exception_if_any_message_does_not_have_recpients()
     {
-        $message1 = (new ExpoMessage)
+        $message1 = (new ExpoMessage())
             ->setTitle('Title')
             ->setBody('Message body')
             ->setData(['foo' => 'bar'])
