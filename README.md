@@ -12,9 +12,9 @@ If you have any problems with the code in this repository, feel free to [open an
 -   [Use Cases](#use-cases)
 -   [Composing a Message](#composing-a-message)
 -   [Sending a Message](#sending-a-push-notification)
--   [Handling DeviceNotRegistered tokens](#handling-devicenotregistered-tokens)
 -   [Channel Subscriptions](#channel-subscriptions)
 -   [Expo Responses](#expo-responses)
+-   [Handling Unregistered Devices](#handling-unregistered-devices)
 -   [Retrieving Push Receipts](#retrieving-push-receipts)
 -   [Changelog](#changelog)
 -   [Contributing](#contributing)
@@ -55,12 +55,11 @@ Compose a push notification message to send using options from the [Expo docs](h
 use ExpoSDK\ExpoMessage;
 
 /**
- * Create messages manually or 
+ * Create messages fluently and/or pass attributes to the constructor
  */
 $message = (new ExpoMessage([
     'title' => 'initial title',
     'body' => 'initial body',
-    // other Expo message properties
 ]))
     ->setTitle('This title overrides initial title')
     ->setBody('This notification body overrides initial body')
@@ -70,7 +69,7 @@ $message = (new ExpoMessage([
     ->playSound();
 ```
 
-## Sending a push notification:
+## Sending a push notification
 
 Compose a message then send to one or more recipients.
 
@@ -85,7 +84,7 @@ use ExpoSDK\ExpoMessage;
 $messages = [
     [
         'title' => 'Test notification',
-        'to' => 'ExponentPushToken[xxxx-xxxx-xxxx]',    
+        'to' => 'ExponentPushToken[xxxx-xxxx-xxxx]',
     ],
     new ExpoMessage([
         'title' => 'Notification for default recipients',
@@ -94,7 +93,7 @@ $messages = [
 ];
 
 /**
- * These recipients are used when ExpoMessage has none 
+ * These recipients are used when ExpoMessage does not have "to" set
  */
 $defaultRecipients = [
     'ExponentPushToken[xxxx-xxxx-xxxx]',
@@ -104,33 +103,7 @@ $defaultRecipients = [
 (new Expo)->send($messages)->to($defaultRecipients)->push();
 ```
 
-## Handling DeviceNotRegistered tokens
-
-Expo has two macros for handling tokens that have DeviceNotRegistered error in Expo response. You can register callbacks for them somewhere in the beginning of your request lifecycle and they will be called for all invalid tokens.
-
-You only need to register them once as they are applied for all future Expo instances.
-
-```php
-use ExpoSDK\Expo;
-
-Expo::addDevicesNotRegisteredHandler(function ($tokens) {
-    // this callback is called once and receives array of invalid tokens
-});
-Expo::addDeviceNotRegisteredHandler(function ($token) {
-    // this callback is called for each token separately and only if previous macro is not registered
-});
-
-$expo1 = new Expo();
-$expo1->send(...)->push(); // will call your callbacks
-
-$expo2 = new Expo();
-$expo2->send(...)->push(); // also will call your callbacks
-
-$expo3 = new Expo();
-$expo3->send(...)->push(); // also will call your callbacks
-```
-
-## Channel subscriptions:
+## Channel subscriptions
 
 Subscribe tokens to a channel, then push notification messages to that channel. Subscriptions are persisted internally in a local file so you don't have to worry about this yourself. Unsubscribe the token from the channel at any time to stop messages to that recipient.
 
@@ -173,6 +146,26 @@ Get the data returned from successful responses from the Expo server.
 $response = $expo->send($message)->to($recipients)->push();
 
 $data = $response->getData();
+```
+
+## Handling unregistered devices
+
+Expo provides a macro for handling tokens that have DeviceNotRegistered error in the Expo response. You can register a callback before sending your messages to handle these unregistered tokens.
+
+You only need to register the handler once as it will be applied to all Expo instances.
+
+```php
+use ExpoSDK\Expo;
+
+Expo::addDevicesNotRegisteredHandler(function ($tokens) {
+    // this callback is called once and receives an array of unregistered tokens
+});
+
+$expo1 = new Expo();
+$expo1->send(...)->push(); // will call your callback
+
+$expo2 = new Expo();
+$expo2->send(...)->push(); // will also call your callback
 ```
 
 ## Retrieving push receipts

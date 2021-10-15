@@ -249,7 +249,9 @@ class Expo
             }
 
             if (! empty($notRegisteredTokens)) {
-                $this->devicesNotRegistered($notRegisteredTokens);
+                $this->devicesNotRegistered(
+                    array_unique($notRegisteredTokens)
+                );
             }
         }
 
