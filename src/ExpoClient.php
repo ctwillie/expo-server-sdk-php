@@ -22,9 +22,9 @@ class ExpoClient
     /** @var ExpoErrorManager */
     private $errors;
 
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        $this->client = new Client();
+        $this->client = new Client($options);
 
         $this->errors = new ExpoErrorManager();
     }
