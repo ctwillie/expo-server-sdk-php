@@ -14,7 +14,7 @@ class MacroableTest extends TestCase
     {
         parent::setUp();
 
-        $this->macroableClass = new class() {
+        $this->macroableClass = new class () {
             private $privateVariable = 'privateValue';
 
             use Macroable;
@@ -49,7 +49,7 @@ class MacroableTest extends TestCase
     /** @test */
     public function a_class_can_be_registered_as_a_new_macro_and_be_invoked()
     {
-        $this->macroableClass::macro('newMethod', new class() {
+        $this->macroableClass::macro('newMethod', new class () {
             public function __invoke()
             {
                 return 'newValue';
@@ -125,7 +125,7 @@ class MacroableTest extends TestCase
 
     protected function getMixinClass()
     {
-        return new class() {
+        return new class () {
             private function secretMixinMethod()
             {
                 return 'secret';
