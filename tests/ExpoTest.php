@@ -392,7 +392,7 @@ class ExpoTest extends TestCase
         $data = [
             [
                 "status" => "error",
-                "message" =>"'${token}' is not a registered push notification recipient",
+                "message" => "'${token}' is not a registered push notification recipient",
                 "details" => [
                     "error" => "DeviceNotRegistered",
                 ],
@@ -408,7 +408,7 @@ class ExpoTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
 
         $unregistered = [];
-        Expo::addDevicesNotRegisteredHandler(function($tokens) use ($unregistered) {
+        Expo::addDevicesNotRegisteredHandler(function ($tokens) use ($unregistered) {
             foreach ($tokens as $token) {
                 $unregistered[] = $token;
             }
