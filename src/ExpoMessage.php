@@ -167,14 +167,17 @@ class ExpoMessage
      *
      * @throws ExpoMessageException
      *
-     * @param  object|array|null  $data
+     * @param  mixed  $data
      *
      * @return $this
      */
     public function setData($data = null): self
     {
         if ($data !== null && ! is_object($data) && ! Utils::isAssoc($data)) {
-            throw new ExpoMessageException('Message data must be either an associative array, object or null.');
+            throw new ExpoMessageException(sprintf(
+                'Message data must be either an associative array, object or null. % given',
+                gettype($data)
+            ));
         }
 
         $this->data = $data;

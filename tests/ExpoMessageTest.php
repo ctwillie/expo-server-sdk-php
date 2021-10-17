@@ -61,6 +61,20 @@ class ExpoMessageTest extends TestCase
     }
 
     /** @test */
+    public function throws_exception_if_data_is_not_null_object_or_assoc_array()
+    {
+        $message = new ExpoMessage();
+        $data = ['foo'];
+
+        $this->expectExceptionMessage(sprintf(
+            'Message data must be either an associative array, object or null. % given',
+            gettype($data)
+        ));
+
+        $message->setData($data);
+    }
+
+    /** @test */
     public function can_create_message_from_array()
     {
         $message = (new ExpoMessage([
@@ -82,5 +96,26 @@ class ExpoMessageTest extends TestCase
         asort($message);
 
         $this->assertEquals($expected, $message);
+    }
+
+    /** @test */
+    public function can_set_sound_properties_on_message()
+    {
+        $message = new ExpoMessage([
+            'sound' => 'alert',
+        ]);
+
+        $expected = [
+            'sound' => 'alert',
+            'mutableContent' => false,
+            'priority' => 'default',
+        ];
+
+        $this->assertEquals($expected, $message->toArray());
+
+        $message->playSound();
+        $expected['sound'] = 'default';
+
+        $this->assertEquals($expected, $message->toArray());
     }
 }
