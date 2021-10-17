@@ -35,11 +35,11 @@ class Expo
      */
     private $recipients = null;
 
-    public function __construct(DriverManager $manager = null)
+    public function __construct(DriverManager $manager = null, array $clientOptions = [])
     {
         $this->manager = $manager;
 
-        $this->client = new ExpoClient();
+        $this->client = new ExpoClient($clientOptions);
     }
 
     /**

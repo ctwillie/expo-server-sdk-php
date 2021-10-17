@@ -7,6 +7,9 @@ use ExpoSDK\Exceptions\UnsupportedDriverException;
 use ExpoSDK\Expo;
 use ExpoSDK\ExpoMessage;
 use ExpoSDK\File;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class ExpoTest extends TestCase
@@ -348,5 +351,109 @@ class ExpoTest extends TestCase
 
         $this->assertEmpty($expo->getRecipients());
         $this->assertEmpty($expo->getMessages());
+    }
+
+    /** @test */
+    public function can_push_messages_to_expo_tokens()
+    {
+        $data = [
+            [
+                "id" => "xxx-xxxx-xxxxx-xxxx",
+                "status" => "ok",
+            ],
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => $data,
+            ])),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $expo = new Expo(null, [
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $message = new ExpoMessage([
+            'title' => 'Title',
+            'to' => 'ExpoPushToken[xxxx]',
+        ]);
+
+        $response = $expo->send($message)->push();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function can_register_devices_not_registered_handler()
+    {
+        $token = 'ExpoPushToken[xxxx]';
+        $data = [
+            [
+                "status" => "error",
+                "message" =>"'${token}' is not a registered push notification recipient",
+                "details" => [
+                    "error" => "DeviceNotRegistered",
+                ],
+            ],
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => $data,
+            ])),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+
+        $unregistered = [];
+        Expo::addDevicesNotRegisteredHandler(function($tokens) use ($unregistered) {
+            foreach ($tokens as $token) {
+                $unregistered[] = $token;
+            }
+        });
+
+        $expo = new Expo(null, [
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $message = new ExpoMessage([
+            'title' => 'Title',
+            'to' => $token,
+        ]);
+
+        $response = $expo->send($message)->push();
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function can_retrieve_push_notification_receipts()
+    {
+        $ticketId = 'xxx-xxxx-xxxxx-xxxx';
+        $data = [
+            [
+                "id" => $ticketId,
+                "status" => "ok",
+            ],
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => $data,
+            ])),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $expo = new Expo(null, [
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $response = $expo->getReceipts([$ticketId]);
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
