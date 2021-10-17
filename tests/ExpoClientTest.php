@@ -196,4 +196,69 @@ class ExpoClientTest extends TestCase
 
         $client->sendPushNotifications([$message]);
     }
+
+    /** @test */
+    public function can_retrieve_push_notification_receipts()
+    {
+        $data = [];
+        $ticketId = 'xxxx-xxxx-xxxx';
+        $data[$ticketId] = ["status" => "ok"];
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => $data,
+            ])),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $client = new ExpoClient([
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $response = $client->getPushNotificationReceipts([$ticketId]);
+
+        $this->assertInstanceOf(ExpoResponse::class, $response);
+        $this->assertSame($data, $response->getData());
+    }
+
+    /** @test */
+    public function throws_exception_if_fails_to_retrieve_receipts()
+    {
+        $ticketId = 'xxxx-xxxx-xxxx';
+        $mock = new MockHandler([
+            new Response(400),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $client = new ExpoClient([
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $this->expectException(ExpoException::class);
+
+        $client->getPushNotificationReceipts([$ticketId]);
+    }
+
+    /** @test */
+    public function throws_exception_with_malformed_receipt_data()
+    {
+        $ticketId = 'xxxx-xxxx-xxxx';
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([])),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $client = new ExpoClient([
+            'handler' => $handlerStack,
+            'http_errors' => false,
+        ]);
+
+        $this->expectExceptionMessage(
+            'Expected Expo to respond with a map from receipt IDs to receipts but received data of another type'
+        );
+
+        $client->getPushNotificationReceipts([$ticketId]);
+    }
 }
