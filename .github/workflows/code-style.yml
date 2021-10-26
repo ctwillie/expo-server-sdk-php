@@ -3,8 +3,6 @@ name: Cody Style
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
   php-cs-fixer:
