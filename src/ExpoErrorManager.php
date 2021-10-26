@@ -56,7 +56,14 @@ class ExpoErrorManager
 
         $error = $response['errors'][0];
 
-        return new ExpoException($error['message'], $error['code']);
+        return new ExpoException(
+            sprintf(
+                '%s: %s',
+                $error['code'],
+                $error['message']
+            ),
+            $statusCode
+        );
     }
 
     /**
