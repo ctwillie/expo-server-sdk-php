@@ -173,9 +173,13 @@ class ExpoMessage
      */
     public function setData($data = null): self
     {
+        if (gettype($data) === 'array' && empty($data)) {
+            $data = new \stdClass();
+        }
+
         if ($data !== null && ! is_object($data) && ! Utils::isAssoc($data)) {
             throw new ExpoMessageException(sprintf(
-                'Message data must be either an associative array, object or null. % given',
+                'Message data must be either an associative array, object or null. %s given',
                 gettype($data)
             ));
         }

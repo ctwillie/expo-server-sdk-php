@@ -55,15 +55,15 @@ class ExpoErrorManager
         }
 
         $error = $response['errors'][0];
+        $message = $error['message'];
+        $code = $error['code'];
 
-        return new ExpoException(
-            sprintf(
-                '%s: %s',
-                $error['code'],
-                $error['message']
-            ),
-            $statusCode
-        );
+        if (is_string($code)) {
+            $message = "{$code}: {$message}";
+            $code = $statusCode;
+        }
+
+        return new ExpoException($message, $code);
     }
 
     /**
