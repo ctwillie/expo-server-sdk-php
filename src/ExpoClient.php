@@ -43,7 +43,6 @@ class ExpoClient
         }
 
         $response = $this->client->post(self::EXPO_BASE_URL . '/push/send', [
-            'verify' => false,
             'http_errors' => false,
             'headers' => $headers,
             'body' => $body,
@@ -96,7 +95,6 @@ class ExpoClient
         }
 
         $response = $this->client->post(self::EXPO_BASE_URL . '/push/getReceipts', [
-            'verify' => false,
             'http_errors' => false,
             'headers' => $headers,
             'body' => $body,
