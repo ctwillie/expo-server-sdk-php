@@ -17,7 +17,7 @@ class ExpoErrorManagerTest extends TestCase
         'errors' => [
             [
                 'message' => 'Some expo error',
-                'code' => 400,
+                'code' => 'VALIDATION_ERROR',
             ],
         ],
     ];
@@ -71,7 +71,11 @@ class ExpoErrorManagerTest extends TestCase
             $exception
         );
         $this->assertSame(
-            $this->errorResponse['errors'][0]['message'],
+            sprintf(
+                '%s: %s',
+                $this->errorResponse['errors'][0]['code'],
+                $this->errorResponse['errors'][0]['message']
+            ),
             $exception->getMessage()
         );
         $this->assertSame(400, $exception->getCode());

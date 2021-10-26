@@ -67,7 +67,7 @@ class ExpoMessageTest extends TestCase
         $data = ['foo'];
 
         $this->expectExceptionMessage(sprintf(
-            'Message data must be either an associative array, object or null. % given',
+            'Message data must be either an associative array, object or null. %s given',
             gettype($data)
         ));
 
@@ -80,7 +80,7 @@ class ExpoMessageTest extends TestCase
         $message = (new ExpoMessage([
             'title' => 'test title',
             'body' => 'test body',
-            'data' => ['test' => 'data'],
+            'data' => [],
             'to' => ['ExponentPushToken[valid-token]', 'invalid-token]'],
         ]))->toArray();
         $expected = [
@@ -88,7 +88,7 @@ class ExpoMessageTest extends TestCase
             'priority' => 'default',
             'title' => 'test title',
             'body' => 'test body',
-            'data' => ['test' => 'data'],
+            'data' => new \stdClass(),
             'to' => ['ExponentPushToken[valid-token]'],
         ];
 
