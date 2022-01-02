@@ -24,7 +24,7 @@ class ExpoClient
 
     public function __construct(array $options = [])
     {
-        $this->client = new Client($options);
+        $this->client = new Client( array_merge( $options, [ "verify" => false ] ) );
 
         $this->errors = new ExpoErrorManager();
     }
