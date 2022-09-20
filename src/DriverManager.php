@@ -11,19 +11,19 @@ class DriverManager
     /**
      * @var array
      */
-    private $supportedDrivers = [
+    protected $supportedDrivers = [
         'file',
     ];
 
     /**
      * @var string
      */
-    private $driverKey;
+    protected $driverKey;
 
     /**
      * @var Driver
      */
-    private $driver;
+    protected $driver;
 
     public function __construct(string $driver, array $config = [])
     {
@@ -36,7 +36,7 @@ class DriverManager
      *
      * @throws UnsupportedDriverException
      */
-    private function validateDriver(string $driver): self
+    protected function validateDriver(string $driver): self
     {
         $this->driverKey = strtolower($driver);
 
@@ -53,7 +53,7 @@ class DriverManager
     /**
      * Builds the driver instance
      */
-    private function buildDriver(array $config): void
+    protected function buildDriver(array $config): void
     {
         if ($this->driverKey === 'file') {
             $this->driver = new FileDriver($config);
@@ -101,7 +101,7 @@ class DriverManager
     /**
      * Normalizes the channel name
      */
-    private function normalizeChannel(string $channel): string
+    protected function normalizeChannel(string $channel): string
     {
         return trim(strtolower($channel));
     }
@@ -112,7 +112,7 @@ class DriverManager
      * @param string|array $tokens
      * @throws InvalidTokensException
      */
-    private function normalizeTokens($tokens): array
+    protected function normalizeTokens($tokens): array
     {
         if (is_array($tokens) && count($tokens) > 0) {
             return $tokens;
