@@ -244,7 +244,7 @@ class Expo
 
             foreach ($response->getData() as $index => $ticket) {
                 if (($ticket['details']['error'] ?? '') === 'DeviceNotRegistered') {
-                    $notRegisteredTokens[] = $messages[$index]['to'];
+                    $notRegisteredTokens[] = $ticket['details']['expoPushToken'] ?? $messages[$index]['to'];
                 }
             }
 
