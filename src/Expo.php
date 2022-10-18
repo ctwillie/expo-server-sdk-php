@@ -2,7 +2,6 @@
 
 namespace ExpoSDK;
 
-use Closure;
 use ExpoSDK\Exceptions\ExpoException;
 use ExpoSDK\Exceptions\InvalidTokensException;
 use ExpoSDK\Traits\Macroable;
@@ -43,9 +42,32 @@ class Expo
     }
 
     /**
+     * Registers macro for handling a particular type of ticket error.
+     *
+     * @param string $exceptionName
+     *
+     * @param callable $callback
+     *
+     * @return void
+     */
+    public static function addTicketExceptionMacro(string $exceptionName, callable $callback): void
+    {
+        $exceptionTypes = [
+            'MessageTooBig',
+            'MessageRateExceeded',
+            'MismatchSenderId',
+            'InvalidCredentials',
+        ];
+        if (!in_array($exceptionName, $exceptionTypes)) {
+            throw new \InvalidArgumentException(sprintf('$exceptionName must be one of %s, or use ::addDevicesNotRegisteredHandler().'), implode(', ', $exceptionTypes));
+        }
+        self::macro("handle$exceptionName", $callback);
+    }
+
+    /**
      * Registers macro for handling all tokens with DeviceNotRegistered errors
      */
-    public static function addDevicesNotRegisteredHandler(Closure $callback): void
+    public static function addDevicesNotRegisteredHandler(callable $callback): void
     {
         self::macro('devicesNotRegistered', $callback);
     }
@@ -239,23 +261,40 @@ class Expo
 
         $response = $this->client->sendPushNotifications($messages);
 
-        if (self::hasMacro('devicesNotRegistered')) {
-            $notRegisteredTokens = [];
-
-            foreach ($response->getData() as $index => $ticket) {
-                if (($ticket['details']['error'] ?? '') === 'DeviceNotRegistered') {
-                    $notRegisteredTokens[] = $messages[$index]['to'];
-                }
-            }
-
-            if (! empty($notRegisteredTokens)) {
-                $this->devicesNotRegistered(
-                    array_unique($notRegisteredTokens)
-                );
-            }
-        }
+        $this->processTicketExceptions($response->getData(), $messages);
 
         return $response;
+    }
+
+    /**
+     * Process per-ticket exceptions.
+     *
+     * @param array $tickets
+     *
+     * @param array $messages
+     *
+     * @return void
+     *
+     * @see https://docs.expo.dev/push-notifications/sending-notifications/#push-receipt-errors
+     */
+    protected function processTicketExceptions(array $tickets, array $messages): void
+    {
+        $notRegisteredTokens = [];
+        $hasDeviceNotRegisteredMacro = self::hasMacro('devicesNotRegistered');
+        foreach ($tickets as $index => $ticket) {
+            $errorName = $ticket['details']['error'] ?? NULL;
+            if ($hasDeviceNotRegisteredMacro && ($errorName === 'DeviceNotRegistered')) {
+                $notRegisteredTokens[] = $messages[$index]['to'];
+            }
+            else if (static::hasMacro("handle$errorName")) {
+                $this->{"handle$errorName"}($messages[$index], $ticket);
+            }
+        }
+        if (!empty($notRegisteredTokens)) {
+            $this->devicesNotRegistered(
+                array_unique($notRegisteredTokens)
+            );
+        }
     }
 
     /**
