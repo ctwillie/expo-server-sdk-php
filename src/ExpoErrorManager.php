@@ -57,13 +57,14 @@ class ExpoErrorManager
         $error = $response['errors'][0];
         $message = $error['message'];
         $code = $error['code'];
-
+        $details = isset($error['details'])? $error['details'] : null;
+        
         if (is_string($code)) {
             $message = "{$code}: {$message}";
             $code = $statusCode;
         }
 
-        return new ExpoException($message, $code);
+        return new ExpoException($message, $code, null, $details);
     }
 
     /**
