@@ -130,6 +130,19 @@ class ExpoMessage
      */
     private $mutableContent = false;
 
+    /**
+     * Specifies whether this notification should be handled by apps with background notifications
+     * enabled on iOS. Defaults to false.
+     *
+     * To enable iOS background notifications handling, read the documentation:
+     * https://docs.expo.dev/versions/latest/sdk/notifications/#background-events
+     *
+     * iOS only.
+     *
+     * @var bool
+     */
+    private $_contentAvailable = false;
+
     public function __construct(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
@@ -384,6 +397,22 @@ class ExpoMessage
     public function setMutableContent(bool $mutable): self
     {
         $this->mutableContent = $mutable;
+
+        return $this;
+    }
+
+    /**
+     * Set whether the notification should be handled by apps with background notifications enabled.
+     *
+     * @param   bool  $contentAvailable
+     *
+     * @return $this
+     *
+     * @see _contentAvailable
+     */
+    public function setContentAvailable(bool $contentAvailable): self
+    {
+        $this->_contentAvailable = $contentAvailable;
 
         return $this;
     }
