@@ -130,6 +130,15 @@ class ExpoMessage
      */
     private $mutableContent = false;
 
+    /**
+     * It tells iOS that the application has to wake up when a notification is received. It has to be true if you want to handle push notification receiving with a background task.
+     *
+     * iOS only.
+     *
+     * @var bool
+     */
+    private $_contentAvailable = false;
+
     public function __construct(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
@@ -384,6 +393,22 @@ class ExpoMessage
     public function setMutableContent(bool $mutable): self
     {
         $this->mutableContent = $mutable;
+
+        return $this;
+    }
+
+    /**
+     * Set whether the notification can be wake up the application. iOS only
+     *
+     * @see _contentAvailable
+     *
+     * @param  bool  $isContentAvailable
+     *
+     * @return $this
+     */
+    public function set_contentAvailable(bool $isContentAvailable): self
+    {
+        $this->_contentAvailable = $isContentAvailable;
 
         return $this;
     }
