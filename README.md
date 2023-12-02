@@ -107,12 +107,11 @@ $defaultRecipients = [
 
 Subscribe tokens to a channel, then push notification messages to that channel. Subscriptions are persisted internally in a local file so you don't have to worry about this yourself. Unsubscribe the token from the channel at any time to stop messages to that recipient.
 
-> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers. Database drivers coming in the near future to handle this use case.
+> :warning: **If you are are running multiple app servers**: Be very careful here! Channel subscriptions are stored in an internal local file. Subscriptions will not be shared across multiple servers.
 
 ```php
 /**
  * Specify the file driver to persist subscriptions internally.
- * More drivers coming soon, (database, redis, custom local file)
  */
 use ExpoSDK\Expo;
 
