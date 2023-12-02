@@ -159,6 +159,7 @@ class ExpoTest extends TestCase
             "priority" => "default",
             "sound" => "default",
             "mutableContent" => false,
+            "_contentAvailable" => false,
         ];
 
         $this->assertSame($expected, $message->toArray());
@@ -265,6 +266,7 @@ class ExpoTest extends TestCase
                 "channelId" => "default",
                 "categoryId" => "category-id",
                 "mutableContent" => true,
+                "_contentAvailable" => true,
             ],
             (new ExpoMessage())->setData(['foo' => 'bar'])
                 ->setTtl(10)

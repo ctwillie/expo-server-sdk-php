@@ -30,7 +30,7 @@ class ExpoMessageTest extends TestCase
             ->setChannelId('default')
             ->setCategoryId('category-id')
             ->setMutableContent(true)
-            ->set_contentAvailable(true);
+            ->setContentAvailable(true);
 
         $this->assertSame(
             [
@@ -84,7 +84,7 @@ class ExpoMessageTest extends TestCase
             'body' => 'test body',
             'data' => [],
             'to' => ['ExponentPushToken[valid-token]', 'invalid-token]'],
-            '_contentAvailable' => true,
+            '_contentAvailable' => false,
         ]))->toArray();
         $expected = [
             'mutableContent' => false,
@@ -93,7 +93,7 @@ class ExpoMessageTest extends TestCase
             'body' => 'test body',
             'data' => new \stdClass(),
             'to' => ['ExponentPushToken[valid-token]'],
-            '_contentAvailable' => true,
+            '_contentAvailable' => false,
         ];
 
         asort($expected);
@@ -113,6 +113,7 @@ class ExpoMessageTest extends TestCase
             'sound' => 'alert',
             'mutableContent' => false,
             'priority' => 'default',
+            '_contentAvailable' => false,
         ];
 
         $this->assertEquals($expected, $message->toArray());
